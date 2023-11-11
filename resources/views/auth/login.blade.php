@@ -39,6 +39,9 @@
                                 href="{{ url('register') }}">{{ __('Sign Up') }}</a></p>
 
                     </form>
+                    <div class="text-center">
+                        <a href="{{ route('password.request') }}">Forgot Your Password?</a>
+                    </div>
                 </div>
 
             </div>
