@@ -26,7 +26,7 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/cache-clear', function() {
+Route::get('/cache-clear', function () {
     Artisan::call('optimize:clear');
     return true;
 });
@@ -34,17 +34,18 @@ Route::get('/cache-clear', function() {
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['prefix' => 'admin'], function () {
 
-//Admin Routes
-Route::get('dashboard', [AdminController::class, 'AdminDashboard']);
+    //Admin Routes
+    Route::get('dashboard', [AdminController::class, 'AdminDashboard'])->name('home');
+    Route::group(['as' => 'admin.'], function () {
+        //Roles
+        Route::resource('role', RoleController::class);
 
-//Roles
-Route::resource('role', RoleController::class);
-
-Route::resource('users', UserController::class);
-
+        Route::resource('users', UserController::class);
+        Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
+    });
 });

@@ -4,35 +4,30 @@
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Edit Role</h6>
+                <h6 class="mb-0">Add Role</h6>
                 <button href="{{ route('admin.role.index') }}" class="btn btn-primary">Back</button>
             </div>
             <div class="table-responsive">
-                <form method="POST" action="{{ route('admin.role.update', $roles->id) }}">
+                <form method="POST" action="{{ route('admin.role.store') }}">
                     @csrf
-                    @method('PUT')
-
                     <div class="text-start">
                         <strong>Name</strong>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ $roles->name }}"
+                        <input type="text" class="form-control" id="name" name="name"
                             required>
                     </div>
                     <div class="">
                         <div class="d-flex justify-content-between">
                             <strong>Permission:</strong> <span><input type="checkbox" id="selectAll" />Select all</span>
                         </div>
-                        <select id="permission" name="permission[]" class="form-control" multiple="">
+                        <select id="permission" name="permission[]" class="form-control text-start" multiple="">
                             @foreach ($permission as $value)
-                                <option value="{{ $value->id }}"
-                                    {{ in_array($value->id, $rolePermission) ? 'selected' : '' }}> {{ $value->name }}
-                                </option>
+                                <option value="{{ $value->id }}">{{ $value->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <!-- Add other fields for role editing as needed -->
 
                     <div class="mt-3">
-                        <button type="submit" class="btn btn-primary float-end">Update Role</button>
+                        <button type="submit" class="btn btn-primary float-end">Create Role</button>
                     </div>
                 </form>
             </div>
