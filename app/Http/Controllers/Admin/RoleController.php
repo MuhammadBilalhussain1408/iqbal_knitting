@@ -11,29 +11,50 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
         $roles = Role::all();
 
         return view('admin.roles.index', compact('roles'));
     }
 
+    public function create()
+    {
+        $permission = Permission::get();
+        return view('admin.roles.create', compact('permission'));
+    }
 
-    public function edit(string $id){
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name'=>'required|unique:roles,name',
+        ]);
+        $arr = $request->except('_token');
+        $arr['guard_name'] = 'web';
+        $role = Role::create($arr);
+        $role->syncPermissions($request->input('permission'));
+
+        return redirect(route('admin.role.index'))->with('success', 'Role updated successfully');
+    }
+
+    public function edit(string $id)
+    {
 
         $roles = Role::where('id', $id)->first();
         $permission = Permission::get();
         $rolePermission = DB::table('role_has_permissions')->where('role_has_permissions.role_id', $id)
-        ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')->all();
+            ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')->all();
 
-        return view('admin.roles.edit',compact(
+        return view('admin.roles.edit', compact(
             'roles',
-        'permission',
-    'rolePermission'));
-
+            'permission',
+            'rolePermission'
+        ));
     }
 
-    public function update(Request $request, string $id){
+    public function update(Request $request, string $id)
+    {
 
         $role = Role::find($id);
         $role->name = $request->name;
