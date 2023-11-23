@@ -9,7 +9,7 @@
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-user-circle me-1"></i>User</a>
                 <div class="dropdown-menu bg-transparent border-0">
                     <a href="{{route('admin.role.index')}}" class="dropdown-item ms-4"><i class="fa fa-circle me-3"></i>Role</a>
-                    <a href="#" class="dropdown-item ms-4"><i class="fa fa-circle me-3"></i>Permission</a>
+                    <a href="{{route('admin.permissions.index')}}" class="dropdown-item ms-4"><i class="fa fa-circle me-3"></i>Permission</a>
                     <a href="{{route('admin.users.index')}}" class="dropdown-item ms-4"><i class="fa fa-circle me-3"></i>User</a>
                 </div>
             </div>

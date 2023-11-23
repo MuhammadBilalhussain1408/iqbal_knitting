@@ -9,7 +9,7 @@
                         <div class="card-header">
                           Users
                             @can('user-create')
-                                <a href="{{route('admin.users.create')}}" class="btn-datatable"><button class="btn btn-primary btn-sm z">+Add User</button></a>
+                                <a href="{{route('admin.users.create')}}" class="btn-datatable float-end"><button class="btn btn-primary btn-sm z">+Add User</button></a>
                             @endcan
                         </div>
                         <div class="card-body">

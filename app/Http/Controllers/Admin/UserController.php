@@ -42,29 +42,30 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            // 'role' => 'required|exists:roles,id',
+            'role_id' => 'required', // Make sure role_id is present in the request
         ]);
 
         $user = User::create([
-
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request['password']),
-
+            'phone' => $request->phone,
+            'password' => bcrypt($request->password),
         ]);
 
+        $role = Role::findById($request->role_id);
 
-        $role = Role::findById($request['role_id']);
+        if ($role) {
+            $user->assignRole($role);
+        } else {
+           
+        }
 
-        $user->assignRole($role);
-
-
-        return redirect(route('admin.users.index'))->with(['success', 'User saved successfully']);
+        return redirect(route('admin.users.index'))->with('success', 'User saved successfully');
     }
+
 
 
     public function edit(string $id)

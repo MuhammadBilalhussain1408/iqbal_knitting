@@ -5,7 +5,7 @@
         <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Add Role</h6>
-                <button href="{{ route('admin.role.index') }}" class="btn btn-primary">Back</button>
+                <a href="{{ route('admin.role.index') }}" class="btn btn-primary">Back</a>
             </div>
             <div class="table-responsive">
                 <form method="POST" action="{{ route('admin.role.store') }}">

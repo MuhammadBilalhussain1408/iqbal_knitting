@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['as' => 'admin.'], function () {
         //Roles
         Route::resource('role', RoleController::class);
+        Route::resource('permissions', PermissionController::class);
 
         Route::resource('users', UserController::class);
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
