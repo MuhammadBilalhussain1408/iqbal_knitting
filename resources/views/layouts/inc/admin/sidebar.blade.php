@@ -13,8 +13,8 @@
                     <a href="{{route('admin.users.index')}}" class="dropdown-item ms-4"><i class="fa fa-circle me-3"></i>User</a>
                 </div>
             </div>
-            <a href="widget.html" class="nav-item nav-link my-1"><i class="fa fa-th me-1"></i>knitted fabric</a>
-            <a href="form.html" class="nav-item nav-link my-1"><i class="fa fa-keyboard me-1"></i>yarn</a>
+            <a href="{{route('admin.thread.index')}}" class="nav-item nav-link my-1"><i class="fa fa-keyboard me-1"></i>Thread</a>
+            <a href="{{route('admin.party.index')}}" class="nav-item nav-link my-1"><i class="fa fa-th me-1"></i>Party</a>
             <a href="table.html" class="nav-item nav-link my-1"><i class="fas fa-wallet me-1"></i>Our Stock</a>
         </div>
     </nav>

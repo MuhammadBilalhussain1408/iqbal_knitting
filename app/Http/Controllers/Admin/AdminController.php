@@ -12,7 +12,7 @@ class AdminController extends Controller
     public function AdminDashboard(){
 
         $user = Auth::user();
-        
+
         return view('admin.dashboard')->with('user',$user);
 
     }

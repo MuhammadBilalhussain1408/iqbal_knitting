@@ -31,6 +31,13 @@ class UserController extends Controller
             ->addColumn('name', function ($row) {
                 return $row->name;
             })
+            ->addColumn('role', function ($row) {
+                $role = $row->roles()->first();
+                return $role?->name;
+            })
+            ->addColumn('action', function ($row) {
+                return '';
+            })
             ->rawColumns(['action'])
             ->make(true);
     }
@@ -60,7 +67,7 @@ class UserController extends Controller
         if ($role) {
             $user->assignRole($role);
         } else {
-           
+
         }
 
         return redirect(route('admin.users.index'))->with('success', 'User saved successfully');

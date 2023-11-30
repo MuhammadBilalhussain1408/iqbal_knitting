@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Party;
+use App\Http\Controllers\Controller;
+use App\Models\Thread;
 use Illuminate\Http\Request;
 
-class PartyController extends Controller
+class ThreadController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('admin.thread.index');
     }
 
     /**
@@ -34,7 +35,7 @@ class PartyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Party $party)
+    public function show(Thread $thread)
     {
         //
     }
@@ -42,7 +43,7 @@ class PartyController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Party $party)
+    public function edit(Thread $thread)
     {
         //
     }
@@ -50,7 +51,7 @@ class PartyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Party $party)
+    public function update(Request $request, Thread $thread)
     {
         //
     }
@@ -58,7 +59,7 @@ class PartyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Party $party)
+    public function destroy(Thread $thread)
     {
         //
     }

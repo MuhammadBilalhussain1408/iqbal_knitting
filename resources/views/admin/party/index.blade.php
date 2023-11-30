@@ -6,12 +6,13 @@
             <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
-                        <div class="card-header">
-                            Users
-                            @can('user-create')
-                                <a href="{{ route('admin.users.create') }}" class="btn-datatable float-end"><button
-                                        class="btn btn-primary btn-sm z">+Add User</button></a>
-                            @endcan
+                        <div class="card-header text-start">
+                            Parties/Customers
+                            {{-- @can('user-create') --}}
+                            <a href="{{ route('admin.party.create') }}" class="btn-datatable float-end">
+                                <button class="btn btn-primary btn-sm z">+Add Party</button>
+                            </a>
+                            {{-- @endcan --}}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -21,8 +22,8 @@
                                             <th>#</th>
                                             <th>Name</th>
                                             <th>Email</th>
-                                            {{-- <th>Phone</th> --}}
-                                            <th>Role</th>
+                                            <th>Address</th>
+                                            <th>Phone</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -44,7 +45,7 @@
                 },
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllUser') }}",
+                "ajax": "{{ route('admin.getAllParties') }}",
                 "columns": [{
                         data: 'id',
                         name: 'id'
@@ -57,10 +58,13 @@
                         data: 'email',
                         name: 'email'
                     },
-                    // {data: 'phone', name: 'phone'},
                     {
-                        data: 'role',
-                        name: 'role'
+                        data: 'address',
+                        name: 'address'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'phone'
                     },
                     {
                         data: 'action',
@@ -85,6 +89,10 @@
                     {
                         "targets": 3,
                         "className": "text-start",
+                    },
+                    {
+                        "targets": 4,
+                        "className": "text-start",
                     }
                 ]
             });
@@ -93,7 +101,7 @@
         function deleteConfirmation(id) {
             swal.fire({
                 title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover",
+                // text: "Once deleted, you will not be able to recover this imaginary file!",
                 icon: "warning",
                 showCancelButton: true,
                 showCloseButton: true,
@@ -101,11 +109,10 @@
                 confirmButtonText: 'Yes, Delete',
                 cancelButtonColor: '#d33',
                 confirmButtonColor: '#556ee6',
-                // width:300,
+                // width:450,
                 allowOutsideClick: false
             }).then((willDelete) => {
-                console.log(willDelete);
-                if (willDelete.isConfirmed) {
+                if (willDelete) {
                     $.ajaxSetup({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -113,14 +120,15 @@
                     });
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('admin/users') }}" + '/' + id,
-                        dataType: 'JSON',
+                        url: "{{ url('admin/party/') }}" + '/' + id,
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        // dataType: ' JSON',
                         success: function(response) {
                             location.reload();
                         }
                     });
-                } else {
-                    swal.fire("success", "You are safe!", "success");
                 }
             });
         }

@@ -6,12 +6,12 @@
             <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
-                        <div class="card-header">
-                            Users
-                            @can('user-create')
-                                <a href="{{ route('admin.users.create') }}" class="btn-datatable float-end"><button
-                                        class="btn btn-primary btn-sm z">+Add User</button></a>
-                            @endcan
+                        <div class="card-header text-start">
+                            Threads
+                            {{-- @can('user-create') --}}
+                                <a href="{{ route('admin.thread.create') }}" class="btn-datatable float-end"><button
+                                        class="btn btn-primary btn-sm z">+Add Thread</button></a>
+                            {{-- @endcan --}}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
