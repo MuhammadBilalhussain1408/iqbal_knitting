@@ -15,14 +15,12 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="userTable" class="display expandable-table" style="width:100%">
+                                <table id="threadTable" class="display expandable-table" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
-                                            <th>Email</th>
-                                            {{-- <th>Phone</th> --}}
-                                            <th>Role</th>
+                                            <th>Type</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -38,13 +36,13 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#userTable').DataTable({
+            $('#threadTable').DataTable({
                 'language': {
-                    'searchPlaceholder': "Name or Email"
+                    'searchPlaceholder': "Name or Types"
                 },
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllUser') }}",
+                "ajax": "{{ route('admin.getAllThreads') }}",
                 "columns": [{
                         data: 'id',
                         name: 'id'
@@ -54,14 +52,10 @@
                         name: 'name'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
+                        data: 'type',
+                        name: 'type'
                     },
-                    // {data: 'phone', name: 'phone'},
-                    {
-                        data: 'role',
-                        name: 'role'
-                    },
+                    
                     {
                         data: 'action',
                         name: 'action',

@@ -8,10 +8,10 @@
                     <div class="card">
                         <div class="card-header">
                             Users
-                            @can('user-create')
+                            {{-- @can('user-create') --}}
                                 <a href="{{ route('admin.users.create') }}" class="btn-datatable float-end"><button
                                         class="btn btn-primary btn-sm z">+Add User</button></a>
-                            @endcan
+                            {{-- @endcan --}}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
