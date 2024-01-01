@@ -15,7 +15,9 @@
             </div>
             <a href="{{route('admin.thread.index')}}" class="nav-item nav-link my-1"><i class="fa fa-keyboard me-1"></i>Thread</a>
             <a href="{{route('admin.party.index')}}" class="nav-item nav-link my-1"><i class="fa fa-th me-1"></i>Party</a>
-            <a href="table.html" class="nav-item nav-link my-1"><i class="fas fa-wallet me-1"></i>Our Stock</a>
+            <a href="{{route('admin.order.index')}}" class="nav-item nav-link my-1"><i class="fas fa-wallet me-1"></i>Order</a>
+            <a href="{{route('admin.delivery.index')}}" class="nav-item nav-link my-1"><i class="fas fa-wallet me-1"></i>Order Deliveries</a>
+
         </div>
     </nav>
 </div>

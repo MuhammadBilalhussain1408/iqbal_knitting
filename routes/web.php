@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DeliveryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PartyController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ThreadController;
@@ -50,10 +52,15 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('permissions', PermissionController::class);
         Route::resource('thread', ThreadController::class);
         Route::resource('party', PartyController::class);
+        Route::resource('order', OrderController::class);
+        Route::resource('delivery', DeliveryController::class);
 
         Route::resource('users', UserController::class);
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
         Route::get('party-all', [PartyController::class, 'getAllParties'])->name('getAllParties');
         Route::get('thread-all', [ThreadController::class, 'getAllThread'])->name('getAllThread');
+        Route::get('deliveries-all', [DeliveryController::class, 'getAllDeliveries'])->name('getAllDeliveries');
+        Route::get('orders-all', [OrderController::class, 'getAllOrder'])->name('getAllOrder');
+        Route::get('orders-deliver/{id}', [OrderController::class, 'deliverOrder'])->name('order.deliverOrder');
     });
 });

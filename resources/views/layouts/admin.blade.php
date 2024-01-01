@@ -58,14 +58,23 @@
         .col-md-6{
             text-align: left !important;
         }
+        .col-md-4{
+            text-align: left !important;
+        }
+        .col-md-8{
+            text-align: left !important;
+        }
         .row{
             margin-left: auto !important;
         }
+        .borderBox {
+                        border: 1px dotted black;
+                    }
     </style>
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
+    <div class="container-xxl position-relative bg-white d-flex p-0" >
 
 
         <!-- Sidebar Start -->

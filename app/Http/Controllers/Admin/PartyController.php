@@ -58,7 +58,7 @@ class PartyController extends Controller
      */
     public function show(Party $party)
     {
-        //
+        return response()->json(['data' => $party]);
     }
 
     /**
