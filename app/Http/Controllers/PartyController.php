@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Models\Thread;
+use App\Models\Party;
 use Illuminate\Http\Request;
 
-class ThreadController extends Controller
+class PartyController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $thread = Thread::all();
-
-        return view('admin.thread.index', compact('thread'));
-
+        //
     }
 
     /**
@@ -37,15 +34,15 @@ class ThreadController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Thread $thread, Request $request)
+    public function show(Party $party)
     {
-       //
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Thread $thread, $id)
+    public function edit(Party $party)
     {
         //
     }
@@ -53,7 +50,7 @@ class ThreadController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Thread $thread)
+    public function update(Request $request, Party $party)
     {
         //
     }
@@ -61,9 +58,8 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Thread $thread)
+    public function destroy(Party $party)
     {
-        $thread->delete();
-        return redirect(route('admin.thread.index'))->with('success', 'Thread deleted successfully');
+        //
     }
 }

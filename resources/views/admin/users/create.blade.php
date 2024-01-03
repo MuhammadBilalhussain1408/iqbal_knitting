@@ -29,8 +29,13 @@
 
                         <div class="col-md-6 mb-3">
                             <label for="role" class="form-label">Role</label>
-                            <input type="text" class="form-control" name="role" required>
+                            <select class="form-control" name="role_id" required>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
+
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary float-end">Submit</button>

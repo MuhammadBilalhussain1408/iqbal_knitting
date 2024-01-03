@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DeliveryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PartyController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ThreadController;
@@ -50,10 +52,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('permissions', PermissionController::class);
         Route::resource('thread', ThreadController::class);
         Route::resource('party', PartyController::class);
+        Route::resource('order', OrderController::class);
+        Route::resource('delivery', DeliveryController::class);
 
         Route::resource('users', UserController::class);
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
         Route::get('party-all', [PartyController::class, 'getAllParties'])->name('getAllParties');
-        Route::get('thread-all', [ThreadController::class, 'getAllThreads'])->name('getAllThreads');
     });
 });

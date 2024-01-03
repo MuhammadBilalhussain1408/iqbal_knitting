@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Thread;
 use Illuminate\Http\Request;
@@ -12,10 +12,7 @@ class ThreadController extends Controller
      */
     public function index()
     {
-        $thread = Thread::all();
-
-        return view('admin.thread.index', compact('thread'));
-
+        //
     }
 
     /**
@@ -37,15 +34,15 @@ class ThreadController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Thread $thread, Request $request)
+    public function show(Thread $thread)
     {
-       //
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Thread $thread, $id)
+    public function edit(Thread $thread)
     {
         //
     }
@@ -63,7 +60,6 @@ class ThreadController extends Controller
      */
     public function destroy(Thread $thread)
     {
-        $thread->delete();
-        return redirect(route('admin.thread.index'))->with('success', 'Thread deleted successfully');
+        //
     }
 }

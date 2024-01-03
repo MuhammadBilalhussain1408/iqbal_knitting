@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Thread;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ThreadController extends Controller
+class DeliveryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $thread = Thread::all();
+        return view('admin.delivery.index');
+    }
 
-        return view('admin.thread.index', compact('thread'));
+    public function getAllDeliveries(){
 
     }
 
@@ -37,15 +38,15 @@ class ThreadController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Thread $thread, Request $request)
+    public function show(string $id)
     {
-       //
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Thread $thread, $id)
+    public function edit(string $id)
     {
         //
     }
@@ -53,7 +54,7 @@ class ThreadController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Thread $thread)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -61,9 +62,8 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Thread $thread)
+    public function destroy(string $id)
     {
-        $thread->delete();
-        return redirect(route('admin.thread.index'))->with('success', 'Thread deleted successfully');
+        //
     }
 }

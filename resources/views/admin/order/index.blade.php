@@ -7,22 +7,23 @@
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-header text-start">
-                            Threads
+                            Orders
                             {{-- @can('user-create') --}}
-                                <a href="{{ route('admin.thread.create') }}" class="btn-datatable float-end"><button
-                                        class="btn btn-primary btn-sm z">+Add Thread</button></a>
+                            <a href="{{ route('admin.order.create') }}" class="btn-datatable float-end">
+                                <button class="btn btn-primary btn-sm z">+Add Order</button>
+                            </a>
                             {{-- @endcan --}}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="threadTable" class="display expandable-table" style="width:100%">
+                                <table id="ordersTable" class="display expandable-table" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            {{-- <th>Phone</th> --}}
-                                            <th>Role</th>
+                                            <th>order date</th>
+                                            <th>Total Graph Weight</th>
+                                            <th>Total Weight</th>
+                                            <th>Total Boxes</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -38,29 +39,33 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#threadTable').DataTable({
+            $('#ordersTable').DataTable({
                 'language': {
-                    'searchPlaceholder': "Name or Email"
+                    'searchPlaceholder': "Order ID"
                 },
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllUser') }}",
-                "columns": [{
+                "ajax": "{{ route('admin.getAllOrder') }}",
+                "columns": [
+                    {
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'order_date',
+                        name: 'order_date'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
+                        data: 'total_graph_weight',
+                        name: 'total_graph_weight'
                     },
-                    // {data: 'phone', name: 'phone'},
                     {
-                        data: 'role',
-                        name: 'role'
+                        data: 'total_weight',
+                        name: 'total_weight'
+                    },
+                    {
+                        data: 'total_boxes',
+                        name: 'total_boxes'
                     },
                     {
                         data: 'action',
@@ -78,14 +83,6 @@
                         "targets": 1,
                         "className": "text-start",
                     },
-                    {
-                        "targets": 2,
-                        "className": "text-start",
-                    },
-                    {
-                        "targets": 3,
-                        "className": "text-start",
-                    }
                 ]
             });
         });
@@ -93,7 +90,7 @@
         function deleteConfirmation(id) {
             swal.fire({
                 title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover",
+                // text: "Once deleted, you will not be able to recover this imaginary file!",
                 icon: "warning",
                 showCancelButton: true,
                 showCloseButton: true,
@@ -101,11 +98,10 @@
                 confirmButtonText: 'Yes, Delete',
                 cancelButtonColor: '#d33',
                 confirmButtonColor: '#556ee6',
-                // width:300,
+                // width:450,
                 allowOutsideClick: false
             }).then((willDelete) => {
-                console.log(willDelete);
-                if (willDelete.isConfirmed) {
+                if (willDelete) {
                     $.ajaxSetup({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -113,14 +109,15 @@
                     });
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('admin/users') }}" + '/' + id,
-                        dataType: 'JSON',
+                        url: "{{ url('admin/party/') }}" + '/' + id,
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        // dataType: ' JSON',
                         success: function(response) {
                             location.reload();
                         }
                     });
-                } else {
-                    swal.fire("success", "You are safe!", "success");
                 }
             });
         }

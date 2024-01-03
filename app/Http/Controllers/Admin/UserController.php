@@ -41,10 +41,14 @@ class UserController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
+
+    
     public function create()
     {
         $users = User::all();
-        return view('admin.users.create', compact('users'));
+        $roles = Role::all();
+
+        return view('admin.users.create', compact('users', 'roles'));
     }
 
     public function store(Request $request)
@@ -59,6 +63,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'role_id' => $request->role,
             'password' => bcrypt($request->password),
         ]);
 

@@ -9,6 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Spatie\Permission\Models\Role;
+
+
+
 // use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
 
 
@@ -48,4 +52,9 @@ class User extends Authenticatable implements CanResetPassword
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
 }
