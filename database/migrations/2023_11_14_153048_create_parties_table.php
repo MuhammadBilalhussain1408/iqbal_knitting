@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('phone')->nullable();
             $table->text('email')->nullable();
             $table->text('address')->nullable();
+            $table->string('wastage_status')->nullable();
+            $table->string('wastage_percentage')->nullable();
             $table->enum('status',['active','inactive'])->default('active')->nullable();
             $table->timestamps();
         });

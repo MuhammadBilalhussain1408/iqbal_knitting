@@ -24,7 +24,9 @@
                                             <th>Email</th>
                                             <th>Address</th>
                                             <th>Phone</th>
-                                            <th>Actions</th>
+                                            <th>Wastage</th>
+                                            <th>Wastage %age</th>
+                                            <th style="width: 20%">Actions</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -65,6 +67,14 @@
                     {
                         data: 'phone',
                         name: 'phone'
+                    },
+                    {
+                        data: 'wastage_status',
+                        name: 'wastage_status'
+                    },
+                    {
+                        data: 'wastage_percentage',
+                        name: 'wastage_percentage'
                     },
                     {
                         data: 'action',

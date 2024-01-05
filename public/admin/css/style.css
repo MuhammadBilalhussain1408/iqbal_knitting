@@ -272,7 +272,7 @@
 }
 
 .testimonial-carousel .owl-dot.active {
-    background: var(--dark);
+    background: var(--dark);    
     border-color: var(--primary);
 }
 .footer
@@ -280,3 +280,39 @@
     position: fixed;
     bottom: 0;
 }
+
+
+/* update code for responsivness*/
+
+.form-mobile-view .form-control{
+    height: 0 !important;
+    padding: 20px 15px !important;
+    border-radius: 20px;
+    }
+    
+    .form-mobile-view  button{
+        border-radius: 20px;
+    }
+    
+    @media (max-width: 767px){
+        .form-mobile-view{
+            width: 100%;
+        }
+    
+        .text-primary {
+            font-size: 14px;
+        }
+    
+        .form-mobile-view h4{
+            font-size: 16px;
+        }
+    
+        .form-mobile-view .flex-sec{
+            flex-direction: column;
+        }
+    
+        .form-mobile-view .card-body{
+            padding: 0;
+        }
+    }
+    

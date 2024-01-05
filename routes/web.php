@@ -58,5 +58,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('users', UserController::class);
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
         Route::get('party-all', [PartyController::class, 'getAllParties'])->name('getAllParties');
+        Route::get('order-all', [OrderController::class, 'getAllOrder'])->name('getAllOrder');
     });
 });

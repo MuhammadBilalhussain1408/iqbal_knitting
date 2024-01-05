@@ -12,6 +12,7 @@
                 @csrf
                 @method('put')
                 <div class="row">
+                   
                     <div class="col-md-6 mb-3">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" class="form-control" name="name" value="{{ $party->name }}" required>
@@ -28,9 +29,25 @@
                         <label for="role" class="form-label">Address</label>
                         <input type="text" class="form-control" name="address" value="{{ $party->address }}">
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="checkbox" class="form-label">Wastage</label>
+                        <input type="checkbox" class="form-check-input" name="wastage_status" 
+                               id="checkbox" @if($party->wastage_status) checked @endif onchange="toggleDropdown()">
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label for="dropdown" class="form-label">Wastage Percentage</label>
+                        <select class="form-select" name="wastage_percentage" id="dropdown" 
+                                @if(!$party->wastage_status) disabled @endif>
+                            <option value="0.5" @if($party->wastage_percentage == 0.5) selected @endif>0.5</option>
+                            <option value="1.0" @if($party->wastage_percentage == 1.0) selected @endif>1.0</option>
+                            <option value="1.5" @if($party->wastage_percentage == 1.5) selected @endif>1.5</option>
+                            <option value="2.0" @if($party->wastage_percentage == 2.0) selected @endif>2.0</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary float-end">Submit</button>
+                    <button type="submit" class="btn btn-primary float-end">Update</button>
                 </div>
             </form>
         </div>
