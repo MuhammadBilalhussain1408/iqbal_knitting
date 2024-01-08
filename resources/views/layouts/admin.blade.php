@@ -55,26 +55,33 @@
         })
     </script>
     <style>
-        .col-md-6{
+        .col-md-6 {
             text-align: left !important;
         }
-        .col-md-4{
+
+        .col-md-4 {
             text-align: left !important;
         }
-        .col-md-8{
+
+        .col-md-8 {
             text-align: left !important;
         }
-        .row{
+
+        .row {
             margin-left: auto !important;
         }
+
         .borderBox {
-                        border: 1px dotted black;
-                    }
+            border: 1px dotted black;
+        }
+        .font-12{
+            font-size: 12px !important;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0" >
+    <div class="container-xxl position-relative bg-white d-flex p-0">
 
 
         <!-- Sidebar Start -->

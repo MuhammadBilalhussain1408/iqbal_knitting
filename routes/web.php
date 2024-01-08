@@ -59,5 +59,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
         Route::get('party-all', [PartyController::class, 'getAllParties'])->name('getAllParties');
         Route::get('order-all', [OrderController::class, 'getAllOrder'])->name('getAllOrder');
+        Route::get('thread-all', [ThreadController::class, 'getAllThreads'])->name('getAllThreads');
     });
 });

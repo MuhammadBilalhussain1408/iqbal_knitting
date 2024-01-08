@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->text('name')->nullable();
             $table->text('type')->nullable();
+            $table->integer('party_id')->nullable();
+            $table->double('net_weight')->nullable();
+            $table->enum('is_equal_weight', [0, 1])->default(0);
             $table->timestamps();
         });
     }

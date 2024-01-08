@@ -53,8 +53,4 @@ class User extends Authenticatable implements CanResetPassword
         'password' => 'hashed',
     ];
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
 }

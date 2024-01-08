@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Party;
+use Yajra\DataTables\Facades\DataTables;
 
 class ThreadController extends Controller
 {
@@ -16,7 +18,6 @@ class ThreadController extends Controller
         $thread = Thread::all();
 
         return view('admin.thread.index', compact('thread'));
-
     }
 
     /**
@@ -24,7 +25,8 @@ class ThreadController extends Controller
      */
     public function create()
     {
-        //
+        $parties = Party::all();
+        return view('admin.thread.create', compact('parties'));
     }
 
     /**
@@ -32,7 +34,15 @@ class ThreadController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request);
+        Thread::create([
+            'name' => $request->name,
+            'type' => $request->type,
+            'party_id' => $request->party,
+            'net_weight' => $request->net_weight,
+            'is_equal_weight' => ($request->is_equal_weight == 'on') ? '1' : '0'
+        ]);
+        return redirect(route('admin.thread.index'))->with('success', 'Thread saved successfully');
     }
 
     /**
@@ -40,7 +50,7 @@ class ThreadController extends Controller
      */
     public function show(Thread $thread, Request $request)
     {
-       //
+        //
     }
 
     /**
@@ -66,5 +76,20 @@ class ThreadController extends Controller
     {
         $thread->delete();
         return redirect(route('admin.thread.index'))->with('success', 'Thread deleted successfully');
+    }
+
+    function getAllThreads()
+    {
+        $users = Thread::query()->with(['Party']);
+        return DataTables::of($users)->addIndexColumn()
+            ->addColumn('party', function ($row) {
+                $party = $row->Party?->name;
+                return $party;
+            })
+            ->addColumn('action', function ($row) {
+                return '';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }

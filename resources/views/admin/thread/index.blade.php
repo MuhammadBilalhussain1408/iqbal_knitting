@@ -20,9 +20,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
-                                            <th>Email</th>
-                                            {{-- <th>Phone</th> --}}
-                                            <th>Role</th>
+                                            <th>Type</th>
+                                            <th>Party</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -44,8 +43,9 @@
                 },
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllUser') }}",
-                "columns": [{
+                "ajax": "{{ route('admin.getAllThreads') }}",
+                "columns": [
+                    {
                         data: 'id',
                         name: 'id'
                     },
@@ -54,13 +54,12 @@
                         name: 'name'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
+                        data: 'type',
+                        name: 'type'
                     },
-                    // {data: 'phone', name: 'phone'},
                     {
-                        data: 'role',
-                        name: 'role'
+                        data: 'party',
+                        name: 'party'
                     },
                     {
                         data: 'action',

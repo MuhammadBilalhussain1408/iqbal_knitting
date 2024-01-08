@@ -8,5 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Thread extends Model
 {
     use HasFactory;
-    public $guarded=[];
+    public $guarded = [];
+
+    public function Party()
+    {
+        return $this->belongsTo(Party::class, 'party_id', 'id');
+    }
 }
