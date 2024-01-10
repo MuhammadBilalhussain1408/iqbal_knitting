@@ -26,7 +26,7 @@
                                             <th>Phone</th>
                                             <th>Wastage</th>
                                             <th>Wastage %age</th>
-                                            <th style="width: 20%">Actions</th>
+                                            <th style="width: 15%">Actions</th>
                                         </tr>
                                     </thead>
                                 </table>

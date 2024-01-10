@@ -36,13 +36,17 @@ class UserController extends Controller
                 return $role?->name;
             })
             ->addColumn('action', function ($row) {
-                return '';
+                $editBtn = '<a href="' . route('admin.users.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
+                $deleteBtn = '<a class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
+
+                return $editBtn . ' ' . $deleteBtn;
             })
             ->rawColumns(['action'])
             ->make(true);
     }
 
-    
+
+
     public function create()
     {
         $users = User::all();
@@ -51,68 +55,119 @@ class UserController extends Controller
         return view('admin.users.create', compact('users', 'roles'));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'email' => 'required',
+    //         'role' => 'required', // Make sure 'role' is present in the request
+    //     ]);
+
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'phone' => $request->phone,
+    //         'role' => $request->role, // Update this to match the actual foreign key column name
+    //         // 'password' => bcrypt($request->password),
+    //     ]);
+
+    //     $role = Role::find($request->role);
+    //     if ($role) {
+    //         $user->assignRole($role);
+    //     } else {
+    //         // Handle the case when the role is not found
+    //     }
+
+    //     return redirect(route('admin.users.index'))->with('success', 'User saved successfully');
+    // }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'role_id' => 'required', // Make sure role_id is present in the request
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|numeric',
+            'role_id' => 'required|exists:roles,id',
+            'password' => 'required',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'role_id' => $request->role,
-            'password' => bcrypt($request->password),
-        ]);
+        // Create a new user with the validated data
+        $user = User::create($validatedData);
 
-        $role = Role::findById($request->role_id);
+        // Assign the selected role to the user
+        $role = Role::find($request->role_id);
 
         if ($role) {
             $user->assignRole($role);
         } else {
-
+            // Set the role to NULL if it's not found
+            $user->removeRole($user->roles);
         }
 
-        return redirect(route('admin.users.index'))->with('success', 'User saved successfully');
+        // Redirect to the index page or do any additional actions
+        return redirect()->route('admin.users.index')->with('success', 'User added successfully');
     }
 
 
-
-    public function edit(string $id)
+    public function edit(User $user, Role $roles)
     {
 
-        $user = User::where('id', $id)->first();
-
-        return redirect('admin.users.index', compact('user'));
+        return view('admin.users.edit', compact('user', 'roles'));
     }
 
-    public function update(Request $request, $id)
-    {
+    // public function update(Request $request, $id)
+    // {
 
-        $user = User::findOrFail($id);
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            // 'role' => 'required|exists:roles,id',
-        ]);
+    //     $user = User::findOrFail($id);
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'email' => 'required',
+    //         // 'role' => 'required|exists:roles,id',
+    //     ]);
 
-        User::where('id', $id)->update([
-            'name' => $request->first_name,
-            'email' => $request->email,
-            'password' => bcrypt($request['password']),
-
-
-
-        ]);
+    //     User::where('id', $id)->update([
+    //         'name' => $request->first_name,
+    //         'email' => $request->email,
+    //         'password' => bcrypt($request['password']),
 
 
-        $role = Role::findById($request['role_id']);
 
-        $user->syncRoles([$role]); // Use syncRoles to update the user's roles
+    //     ]);
 
+
+    //     $role = Role::findById($request['role_id']);
+
+    //     $user->syncRoles([$role]); // Use syncRoles to update the user's roles
+
+    // }
+
+    public function update(Request $request, User $user)
+{
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'phone' => 'required|numeric',
+        'role_id' => 'required|exists:roles,id',
+        'password' => 'required',
+    ]);
+
+    // Update the user with the validated data
+    $user->update($validatedData);
+
+
+    $role = Role::find($request->role_id);
+
+    if ($role) {
+        $user->syncRoles([$role->name]);
+    } else {
+
+        $user->syncRoles([]);
     }
+
+    return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+}
 
     public function destroy(string $id)
     {

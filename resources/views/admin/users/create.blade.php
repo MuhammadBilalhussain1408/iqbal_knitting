@@ -35,7 +35,12 @@
                                 @endforeach
                             </select>
                         </div>
-
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary float-end">Submit</button>

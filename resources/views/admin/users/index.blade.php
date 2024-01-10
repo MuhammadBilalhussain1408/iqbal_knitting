@@ -63,6 +63,10 @@
                         name: 'role'
                     },
                     {
+                        data: 'password',
+                        name: 'password'
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
@@ -70,7 +74,7 @@
                     },
                 ],
                 'columnDefs': [{
-                        "targets": 0, // your case first column
+                        "targets": 0,
                         "className": "text-start",
                         "width": "4%"
                     },
@@ -86,6 +90,7 @@
                         "targets": 3,
                         "className": "text-start",
                     }
+
                 ]
             });
         });
@@ -126,3 +131,4 @@
         }
     </script>
 @endpush
+xX

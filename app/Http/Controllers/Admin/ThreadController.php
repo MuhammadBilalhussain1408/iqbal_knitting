@@ -15,9 +15,9 @@ class ThreadController extends Controller
      */
     public function index()
     {
-        $thread = Thread::all();
+        $threads = Thread::all();
 
-        return view('admin.thread.index', compact('thread'));
+        return view('admin.thread.index', compact('threads'));
     }
 
     /**
@@ -56,18 +56,26 @@ class ThreadController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Thread $thread, $id)
+    public function edit(Thread $thread)
     {
-        //
+        return view('admin.thread.edit', compact('thread'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Thread $thread)
-    {
-        //
-    }
+{
+    $request->validate([
+        'name' => 'required',
+        'type' => 'required'
+    ]);
+
+    $thread->update($request->except('_token'));
+    return redirect(route('admin.thread.index'))->with('success', 'Thread updated successfully');
+
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -80,16 +88,19 @@ class ThreadController extends Controller
 
     function getAllThreads()
     {
-        $users = Thread::query()->with(['Party']);
+        $users = Thread::query();
         return DataTables::of($users)->addIndexColumn()
-            ->addColumn('party', function ($row) {
-                $party = $row->Party?->name;
-                return $party;
+            ->addColumn('name', function ($row) {
+                return $row->name;
             })
             ->addColumn('action', function ($row) {
-                return '';
+                $editBtn = '<a href="' . route('admin.thread.edit', $row->id) . '" class="btn btn-warning btn-sm">Edit</a>';
+                $deleteBtn = '<a class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
+
+                return $editBtn . ' ' . $deleteBtn;
             })
             ->rawColumns(['action'])
             ->make(true);
     }
+
 }

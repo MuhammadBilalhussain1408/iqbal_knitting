@@ -44,6 +44,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": "{{ route('admin.getAllThreads') }}",
+
                 "columns": [
                     {
                         data: 'id',
@@ -58,18 +59,19 @@
                         name: 'type'
                     },
                     {
-                        data: 'party',
-                        name: 'party'
+                        data: 'party_id',
+                        name: 'party_id'
                     },
                     {
                         data: 'action',
                         name: 'action',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+
                     },
                 ],
                 'columnDefs': [{
-                        "targets": 0, // your case first column
+                        "targets": 0,
                         "className": "text-start",
                         "width": "4%"
                     },
@@ -112,7 +114,10 @@
                     });
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('admin/users') }}" + '/' + id,
+                        url: "{{ url('admin/thread/') }}" + '/' + id,
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
                         dataType: 'JSON',
                         success: function(response) {
                             location.reload();

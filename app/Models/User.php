@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -10,11 +9,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\Permission\Models\Role;
-
-
-
-// use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordTrait;
-
 
 class User extends Authenticatable implements CanResetPassword
 {
@@ -29,7 +23,7 @@ class User extends Authenticatable implements CanResetPassword
         'name',
         'email',
         'phone',
-        'role',
+        'role_id', // Updated field name to match the foreign key
         'password',
     ];
 
@@ -53,4 +47,11 @@ class User extends Authenticatable implements CanResetPassword
         'password' => 'hashed',
     ];
 
+    /**
+     * Define the relationship with the Role model
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

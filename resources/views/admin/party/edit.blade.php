@@ -53,3 +53,19 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    function toggleDropdown() {
+        var checkbox = document.getElementById("checkbox");
+        var dropdown = document.getElementById("dropdown");
+
+        dropdown.disabled = !checkbox.checked;
+
+        if (!checkbox.checked) {
+            
+            dropdown.disabled = true;
+        }
+    }
+</script>
+@endpush

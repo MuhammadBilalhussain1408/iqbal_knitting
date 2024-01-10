@@ -24,21 +24,24 @@ class PartyController extends Controller
     {
         return view('admin.party.create');
     }
-    function getAllParties()
-    {
-        $users = Party::query();
-        return DataTables::of($users)->addIndexColumn()
-            ->addColumn('name', function ($row) {
-                return $row->name;
-            })
-            ->addColumn('action', function ($row) {
-                $btn = '<a href="' . route('admin.party.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
-                $btn = $btn . '<a  class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
-                return $btn;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-    }
+
+   function getAllParties()
+{
+    $users = Party::query();
+    return DataTables::of($users)->addIndexColumn()
+        ->addColumn('name', function ($row) {
+            return $row->name;
+        })
+        ->addColumn('action', function ($row) {
+            $editBtn = '<a href="' . route('admin.party.edit', $row->id) . '" class="btn btn-warning btn-sm">Edit</a>';
+            $deleteBtn = '<a class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
+
+            return $editBtn . ' ' . $deleteBtn;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+}
+
     /**
      * Store a newly created resource in storage.
      */
@@ -72,16 +75,32 @@ class PartyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Party $party)
-    {
-        $request->validate([
-            'name' => 'required',
-            'phone' => 'required'
-        ]);
+ 
 
-        $party->update($request->except('_token'));
-        return redirect(route('admin.party.index'))->with('success', 'Party updated successfully');
+    public function update(Request $request, Party $party)
+{
+    $request->validate([
+        'name' => 'required',
+        'phone' => 'required'
+    ]);
+
+
+    $party->update($request->except('_token', 'wastage_status', 'wastage_percentage'));
+
+
+    $party->wastage_status = $request->has('wastage_status');
+
+    if ($request->has('wastage_status')) {
+        $party->wastage_percentage = $request->input('wastage_percentage');
+    } else {
+
+        $party->wastage_percentage = null;
     }
+
+    $party->save();
+
+    return redirect(route('admin.party.index'))->with('success', 'Party updated successfully');
+}
 
     /**
      * Remove the specified resource from storage.
