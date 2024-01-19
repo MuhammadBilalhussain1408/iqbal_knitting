@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Party;
+use App\Models\Thread;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -25,22 +26,22 @@ class PartyController extends Controller
         return view('admin.party.create');
     }
 
-   function getAllParties()
-{
-    $users = Party::query();
-    return DataTables::of($users)->addIndexColumn()
-        ->addColumn('name', function ($row) {
-            return $row->name;
-        })
-        ->addColumn('action', function ($row) {
-            $editBtn = '<a href="' . route('admin.party.edit', $row->id) . '" class="btn btn-warning btn-sm">Edit</a>';
-            $deleteBtn = '<a class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
+    function getAllParties()
+    {
+        $users = Party::query();
+        return DataTables::of($users)->addIndexColumn()
+            ->addColumn('name', function ($row) {
+                return $row->name;
+            })
+            ->addColumn('action', function ($row) {
+                $editBtn = '<a href="' . route('admin.party.edit', $row->id) . '" class="btn btn-warning btn-sm">Edit</a>';
+                $deleteBtn = '<a class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
 
-            return $editBtn . ' ' . $deleteBtn;
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
+                return $editBtn . ' ' . $deleteBtn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -75,32 +76,32 @@ class PartyController extends Controller
     /**
      * Update the specified resource in storage.
      */
- 
+
 
     public function update(Request $request, Party $party)
-{
-    $request->validate([
-        'name' => 'required',
-        'phone' => 'required'
-    ]);
+    {
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'required'
+        ]);
 
 
-    $party->update($request->except('_token', 'wastage_status', 'wastage_percentage'));
+        $party->update($request->except('_token', 'wastage_status', 'wastage_percentage'));
 
 
-    $party->wastage_status = $request->has('wastage_status');
+        $party->wastage_status = $request->has('wastage_status');
 
-    if ($request->has('wastage_status')) {
-        $party->wastage_percentage = $request->input('wastage_percentage');
-    } else {
+        if ($request->has('wastage_status')) {
+            $party->wastage_percentage = $request->input('wastage_percentage');
+        } else {
 
-        $party->wastage_percentage = null;
+            $party->wastage_percentage = null;
+        }
+
+        $party->save();
+
+        return redirect(route('admin.party.index'))->with('success', 'Party updated successfully');
     }
-
-    $party->save();
-
-    return redirect(route('admin.party.index'))->with('success', 'Party updated successfully');
-}
 
     /**
      * Remove the specified resource from storage.
@@ -109,5 +110,11 @@ class PartyController extends Controller
     {
         $party->delete();
         return redirect(route('admin.party.index'))->with('success', 'Party deleted successfully');
+    }
+
+    public function getPartyThreads($id)
+    {
+        $threads = Thread::where('party_id', $id)->get();
+        return response()->json(['data' => $threads]);
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('thread_id')->nullable();
             $table->unsignedBigInteger('num_of_boxes')->nullable();
             $table->double('total_weight',10,2)->nullable();
-            $table->double('total_graph_weight',10,2)->nullable();
+            $table->integer('deliver_boxes')->nullable();
             $table->timestamps();
         });
     }

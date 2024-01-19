@@ -39,7 +39,7 @@
                                     id="is_equal_weight" />
                             </div>
                         </label>
-                        <input type="number" class="form-control" name="net_weight" id="net_weight" disabled />
+                        <input class="form-control" name="net_weight" id="net_weight" disabled />
                     </div>
                 </div>
 
@@ -60,8 +60,6 @@
                 $('#net_weight').attr('disabled', true);
             }
         }
-        function getWastage(){
-            //
-        }
+
     </script>
 @endpush

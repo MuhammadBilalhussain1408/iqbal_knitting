@@ -17,11 +17,11 @@ return new class extends Migration
             $table->unsignedBigInteger('order_by')->nullable();
             $table->date('order_date')->nullable();
             $table->date('estimated_delivery_date')->nullable();
-            $table->integer('total_boxes')->nullable();
-            $table->double('total_weight',10,2)->nullable();
-            $table->double('total_graph_weight',10,2)->nullable();
-            $table->enum('order_status',[
-                'pending','in_process','partially_delivered','delivered'
+            $table->integer('boxes')->nullable();
+            $table->double('net_weight', 10, 2)->nullable();
+            $table->double('total_net_weight', 10, 2)->nullable();
+            $table->enum('order_status', [
+                'pending', 'in_process', 'partially_delivered', 'delivered'
             ]);
             $table->timestamps();
         });

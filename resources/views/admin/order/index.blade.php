@@ -20,8 +20,8 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>order date</th>
-                                            <th>Total Graph Weight</th>
+                                            <th>Order Date</th>
+                                            <th>Party Name</th>
                                             <th>Total Weight</th>
                                             <th>Total Boxes</th>
                                             <th>Actions</th>
@@ -56,16 +56,16 @@
                         name: 'order_date'
                     },
                     {
-                        data: 'total_graph_weight',
-                        name: 'total_graph_weight'
+                        data: 'party_name',
+                        name: 'party_name'
                     },
                     {
-                        data: 'total_weight',
-                        name: 'total_weight'
+                        data: 'net_weight',
+                        name: 'net_weight'
                     },
                     {
-                        data: 'total_boxes',
-                        name: 'total_boxes'
+                        data: 'boxes',
+                        name: 'boxes'
                     },
                     {
                         data: 'action',

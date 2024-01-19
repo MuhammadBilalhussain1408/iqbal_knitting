@@ -24,15 +24,18 @@ class OrderController extends Controller
     }
     public function getAllOrder()
     {
-        $order = Order::query();
+        $order = Order::query()->with(['Party']);
         return DataTables::of($order)->addIndexColumn()
             ->addColumn('id', function ($row) {
                 return $row->id;
             })
+            ->addColumn('party_name', function ($row) {
+                return $row->Party ? $row->Party->name : '';
+            })
             ->addColumn('action', function ($row) {
                 $btn = '<a href="' . route('admin.order.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
-                $btn = '<a href="' . route('admin.order.deliverOrder', $row->id) . '" class="btn btn-primary btn-sm">Deliver</a>';
-                $btn = $btn . '<a  class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
+                $btn = '<a href="' . route('admin.order.view', $row->id) . '" class="btn btn-primary btn-sm">View</a>';
+                // $btn = $btn . '<a  class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
                 return $btn;
             })
             ->rawColumns(['action'])
@@ -40,8 +43,9 @@ class OrderController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request);
-        $order = Order::create($request->except(['_token', 'items']));
+        $storeArr = $request->except(['_token', 'items']);
+        $storeArr['order_by']=auth()->id();
+        $order = Order::create($storeArr);
         foreach ($request->items as $item) {
             $item['order_id'] = $order->id;
             OrderItem::create($item);
@@ -61,9 +65,9 @@ class OrderController extends Controller
     public function destory(Request $request)
     {
     }
-    public function deliverOrder($id)
+    public function viewOrder($id)
     {
-        $order = Order::with(['OrderItems'])->where('id', $id)->first();
-        return view('admin.delivery.create', compact('order'));
+        $order = Order::with(['OrderItems.Thread', 'Party'])->where('id', $id)->first();
+        return view('admin.order.view_order', compact('order'));
     }
 }

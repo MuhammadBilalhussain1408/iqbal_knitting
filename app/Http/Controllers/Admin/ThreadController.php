@@ -103,4 +103,9 @@ class ThreadController extends Controller
             ->make(true);
     }
 
+    public function getThreadById($id)
+    {
+        $thread = Thread::where('id', $id)->first();
+        return response()->json(['data' => $thread]);
+    }
 }

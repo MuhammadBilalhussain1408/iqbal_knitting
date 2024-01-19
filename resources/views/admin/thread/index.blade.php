@@ -128,5 +128,6 @@
                 }
             });
         }
+
     </script>
 @endpush

@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Thread;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ThreadController extends Controller
+class OrderOutController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('admin.order_out.index');
     }
 
     /**
@@ -20,7 +20,7 @@ class ThreadController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.order_out.create');
     }
 
     /**
@@ -34,7 +34,7 @@ class ThreadController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Thread $thread)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +42,7 @@ class ThreadController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Thread $thread)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +50,7 @@ class ThreadController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Thread $thread)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +58,7 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Thread $thread)
+    public function destroy(string $id)
     {
         //
     }

@@ -87,8 +87,8 @@
                                     <th scope="col">#.</th>
                                     <th>Thread</th>
                                     <th>Boxes</th>
+                                    <th>Net Weight(kg)</th>
                                     <th>Total Weight(kg)</th>
-                                    <th>Total Graph Weight(kg)</th>
                                     <th scope="col" class="w-30px"></th>
                                 </tr>
                             </thead>
@@ -96,24 +96,21 @@
                                 <tr class="classabc" id="row0">
                                     <td scope="row">1.</td>
                                     <td>
-                                        <select id="thread0" class="form-control">
+                                        <select id="thread0" class="form-control" onchange="getThread(0)">
                                             <option value="">Select Thread</option>
-                                            @foreach ($threads as $thread)
-                                                <option value="{{ $thread->id }}">{{ $thread->name }}</option>
-                                            @endforeach
                                         </select>
                                     </td>
                                     <td>
                                         <input type="number" name="boxes0" id="boxes0" class="form-control"
-                                            oninput="calculateOrderDetail()" min="0" />
+                                            oninput="calculateTotalWeight(0)" min="0" />
                                     </td>
                                     <td>
-                                        <input type="number" name="weight0" id="weight0" class="form-control"
-                                            oninput="calculateOrderDetail()" min="0" />
+                                        <input type="text" name="net_weight0" id="net_weight0" class="form-control"
+                                            min="0" readonly oninput="calculateTotalWeight(0)" />
                                     </td>
                                     <td>
-                                        <input type="number" name="graph_weight0" id="graph_weight0" class="form-control"
-                                            oninput="calculateOrderDetail()" min="0" />
+                                        <input type="number" name="total_net_weight0" id="total_net_weight0" class="form-control"
+                                            readonly min="0" />
                                     </td>
                                     <td>
                                         <a onclick="addFunction()" class="">
@@ -132,7 +129,7 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        Total Boxes:
+                                        <b>Total Boxes:</b>
                                     </div>
                                     <div class="col-md-6">
                                         <span id="totalBox">0</span>
@@ -142,20 +139,10 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        Total Weight:
+                                        <b>Total Net Weight:</b>
                                     </div>
                                     <div class="col-md-6">
-                                        <span id="totalWeight">0</span> KG
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        Total Graph Weight:
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span id="totalGraphWeight">0</span> KG
+                                        <span id="totalNetWeight">0</span> KG
                                     </div>
                                 </div>
                             </div>
@@ -172,6 +159,25 @@
 
 @push('scripts')
     <script>
+        function getThread(index) {
+            let id = $('#thread' + index).val();
+            console.log(index, id);
+            $.ajax({
+                type: "GET",
+                url: "{{ url('admin/thread-by-id/') }}" + '/' + id,
+                success: function(response) {
+                    let res = response.data;
+                    console.log(res);
+                    $('#net_weight' + index).val(res.net_weight);
+                    if (res.is_equal_weight == 0) {
+                        $('#net_weight' + index).attr('readonly', false);
+                    } else {
+                        $('#net_weight' + index).attr('readonly', true);
+                    }
+                }
+            });
+        }
+
         function getParty() {
             let id = $('#party option:selected').val();
             if (id) {
@@ -191,6 +197,29 @@
             } else {
                 $("#partyDetails").addClass('d-none');
             }
+            getPartyThreads(0);
+        }
+
+        function getPartyThreads(index) {
+            let id = $('#party option:selected').val();
+            if (id) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url('admin/party-threads/') }}" + '/' + id,
+                    data: {},
+                    success: function(response) {
+                        $('#thread' + index).html('');
+                        $('#thread' + index).append(`
+                            <option value="">Select Thread</option>
+                        `);
+                        response.data.forEach(i => {
+                            $('#thread' + index).append(`
+                                <option value="${i.id}">${i.name}</option>
+                            `);
+                        })
+                    }
+                });
+            }
         }
 
         /* append product row on click */
@@ -202,7 +231,7 @@
                 <tr class="classabc" id="row${dataCount}">
                     <td>${parseInt($('#dynamicRow tr.classabc').length + 1)}</td>
                     <td class="w-150px">
-                        <select id="thread${dataCount}" class="form-control">
+                        <select id="thread${dataCount}" class="form-control" onchange="getThread(${dataCount})">
                             <option value="">Select Thread</option>
                             @foreach ($threads as $thread)
                                 <option value="{{ $thread->id }}">{{ $thread->name }}</option>
@@ -210,13 +239,13 @@
                         </select>
                     </td>
                     <td>
-                        <input type="number" name="boxes${dataCount}" id="boxes${dataCount}" class="form-control" min="0" oninput="calculateOrderDetail()"/>
+                        <input type="number" name="boxes${dataCount}" id="boxes${dataCount}" class="form-control" min="0" oninput="calculateTotalWeight(${dataCount})" />
                     </td>
                     <td>
-                        <input type="number" name="weight${dataCount}" id="weight${dataCount}" class="form-control" min="0" oninput="calculateOrderDetail()" />
+                        <input type="text" name="net_weight${dataCount}" id="net_weight${dataCount}" class="form-control" min="0" readonly oninput="calculateTotalWeight(${dataCount})" />
                     </td>
                     <td>
-                        <input type="number" name="graph_weight${dataCount}" id="graph_weight${dataCount}" class="form-control" min="0" oninput="calculateOrderDetail()" />
+                        <input type="number" name="total_net_weight${dataCount}" id="total_net_weight${dataCount}" class="form-control" min="0" readonly />
                     </td>
                     <td>
                         <a onclick="removeRow($(this))">
@@ -225,6 +254,8 @@
                     </td>
                 </tr>
             `)
+            getPartyThreads(dataCount);
+
         }
 
         /* remove product row on click */
@@ -244,8 +275,8 @@
                 let obj = {
                     'thread_id': $('#thread' + i).val(),
                     'num_of_boxes': $('#boxes' + i).val(),
-                    'total_weight': $('#weight' + i).val(),
-                    'total_graph_weight': $('#graph_weight' + i).val(),
+                    'net_weight': $('#net_weight' + i).val(),
+                    'total_net_weight': $('#total_net_weight' + i).val(),
                 };
                 items.push(obj);
             }
@@ -258,9 +289,8 @@
                     _token: "{{ csrf_token() }}",
                     'party_id': $('#party').val(),
                     'order_date': $('#order_date').val(),
-                    'total_graph_weight': $('#totalGraphWeight').text(),
-                    'total_weight': $('#totalWeight').text(),
-                    'total_boxes': $('#totalBox').text(),
+                    'net_weight': $('#totalNetWeight').text(),
+                    'boxes': $('#totalBox').text(),
                     'estimated_delivery_date': $('#estimated_delivery_date').val(),
                     'items': items
                 },
@@ -271,25 +301,30 @@
             });
         });
 
+        function calculateTotalWeight(index) {
+            let netWeight = $('#net_weight' + index).val();
+            let boxes = $('#boxes' + index).val();
+            console.log(netWeight, boxes);
+            if (netWeight && boxes)
+                $('#total_net_weight' + index).val(netWeight * boxes);
+            calculateOrderDetail();
+        }
+
         function calculateOrderDetail() {
             let dataCount = $('#dynamicRow tr.classabc').length;
             let totalBox = 0;
-            let totalWeight = 0;
-            let totalGraphWeight = 0;
+            let totalNetWeight = 0;
 
             for (let i = 0; i < dataCount; i++) {
-                if($('#boxes' + i).val())
+                if ($('#boxes' + i).val())
                     totalBox += parseInt($('#boxes' + i).val());
-                if($('#weight' + i).val())
-                    totalWeight += parseFloat($('#weight' + i).val());
-                if($('#graph_weight' + i).val())
-                    totalGraphWeight += parseFloat($('#graph_weight' + i).val());
+                if ($('#total_net_weight' + i).val())
+                    totalNetWeight += parseFloat($('#total_net_weight' + i).val());
             }
 
-            console.log(totalBox, totalWeight, totalGraphWeight);
+            console.log(totalBox, totalNetWeight);
             $('#totalBox').text(totalBox);
-            $('#totalWeight').text(totalWeight);
-            $('#totalGraphWeight').text(totalGraphWeight);
+            $('#totalNetWeight').text(totalNetWeight);
         }
     </script>
 @endpush

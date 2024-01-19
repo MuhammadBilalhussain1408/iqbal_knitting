@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DeliveryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OrderOutController;
 use App\Http\Controllers\Admin\PartyController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ThreadController;
@@ -53,12 +54,16 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('thread', ThreadController::class);
         Route::resource('party', PartyController::class);
         Route::resource('order', OrderController::class);
+        Route::resource('order_out', OrderOutController::class);
         Route::resource('delivery', DeliveryController::class);
 
         Route::resource('users', UserController::class);
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
         Route::get('party-all', [PartyController::class, 'getAllParties'])->name('getAllParties');
+        Route::get('party-threads/{id}', [PartyController::class, 'getPartyThreads'])->name('getPartyThreads');
         Route::get('order-all', [OrderController::class, 'getAllOrder'])->name('getAllOrder');
+        Route::get('order-view/{id}', [OrderController::class, 'viewOrder'])->name('order.view');
         Route::get('thread-all', [ThreadController::class, 'getAllThreads'])->name('getAllThreads');
+        Route::get('thread-by-id/{id}', [ThreadController::class, 'getThreadById'])->name('getThreadById');
     });
 });

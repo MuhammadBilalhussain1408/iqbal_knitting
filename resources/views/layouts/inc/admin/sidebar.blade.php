@@ -24,7 +24,7 @@
                 <div class="dropdown-menu bg-transparent border-0">
                     <a href="{{ route('admin.order.index') }}" class="dropdown-item ms-4">
                         <i class="fas fa-wallet me-3 ms-1 font-12"></i>Order In</a>
-                    <a href="{{ route('admin.delivery.index') }}" class="dropdown-item ms-4">
+                    <a href="{{ route('admin.order_out.index') }}" class="dropdown-item ms-4">
                         <i class="fas fa-wallet me-3 ms-1 font-12"></i>Order Out</a>
                 </div>
             </div>
