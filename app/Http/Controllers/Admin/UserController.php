@@ -18,9 +18,8 @@ class UserController extends Controller
 
     public function index()
     {
-
-
         $users  = User::with('roles')->get();
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -83,7 +82,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the incoming request data
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -95,7 +94,6 @@ class UserController extends Controller
         // Create a new user with the validated data
         $user = User::create($validatedData);
 
-        // Assign the selected role to the user
         $role = Role::find($request->role_id);
 
         if ($role) {
@@ -105,7 +103,6 @@ class UserController extends Controller
             $user->removeRole($user->roles);
         }
 
-        // Redirect to the index page or do any additional actions
         return redirect()->route('admin.users.index')->with('success', 'User added successfully');
     }
 

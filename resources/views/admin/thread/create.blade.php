@@ -12,18 +12,18 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" required />
+                        <input type="text" class="form-control" name="name"  />
                     </div>
                     <div class="col-md-6">
                         <label for="type" class="form-label">Type</label>
-                        <input type="text" class="form-control" name="type" required />
+                        <input type="text" class="form-control" name="type"  />
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6">
                         <label for="party" class="form-label">Party</label>
                         {{-- <input type="text" class="form-control" name="party" required /> --}}
-                        <select name="party" id="party" class="form-control" required>
+                        <select name="party" id="party" class="form-control" >
                             <option value="">Select party</option>
                             @foreach ($parties as $party)
                                 <option value="{{ $party->id }}">{{ $party->name }}</option>

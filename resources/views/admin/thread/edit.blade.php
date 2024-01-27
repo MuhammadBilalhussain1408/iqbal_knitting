@@ -14,12 +14,12 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" name="name" value="{{$thread->name}}" required>
+                            <input type="text" class="form-control" name="name" value="{{$thread->name}}" >
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="type" class="form-label">Type</label>
-                            <input type="type" class="form-control" name="type" value="{{$thread->type}}" required>
+                            <input type="type" class="form-control" name="type" value="{{$thread->type}}" >
                         </div>
                     </div>
 

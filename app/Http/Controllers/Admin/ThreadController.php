@@ -35,6 +35,13 @@ class ThreadController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+
+        $request->validate([
+            'name' => 'required',
+            'type' => 'required',
+            
+
+        ]);
         Thread::create([
             'name' => $request->name,
             'type' => $request->type,

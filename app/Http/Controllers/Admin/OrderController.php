@@ -43,6 +43,11 @@ class OrderController extends Controller
     }
     public function store(Request $request)
     {
+        $request->validate([
+            'order_date' => 'required',
+            'net_weight' => 'required',
+            'boxes' => 'required',
+        ]);
         $storeArr = $request->except(['_token', 'items']);
         $storeArr['order_by']=auth()->id();
         $order = Order::create($storeArr);
@@ -61,6 +66,12 @@ class OrderController extends Controller
     }
     public function update(Request $request, $id)
     {
+
+        // $request->validate([
+        //     'order_date' => 'required',
+        //     'net_weight' => 'required',
+        //     'boxes' => 'required',
+        // ]);
     }
     public function destory(Request $request)
     {

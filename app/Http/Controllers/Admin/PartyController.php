@@ -15,6 +15,7 @@ class PartyController extends Controller
      */
     public function index()
     {
+
         return view('admin.party.index');
     }
 
@@ -48,9 +49,12 @@ class PartyController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'name' => 'required',
-            'phone' => 'required'
+            'phone' => 'required',
+            'email' => 'required',
+            'address' => 'required'
         ]);
 
         Party::create($request->except('_token'));
@@ -82,7 +86,9 @@ class PartyController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'phone' => 'required'
+            'phone' => 'required',
+            'email' => 'required',
+            'address' => 'required'
         ]);
 
 
