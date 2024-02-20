@@ -6,12 +6,12 @@
             <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
-                        {{-- <div class="card-header text-start">
+                        <div class="card-header text-start">
                             Orders
-                            <a href="{{ route('admin.order.create') }}" class="btn-datatable float-end">
+                            <a href="{{ route('admin.order_out.create') }}" class="btn-datatable float-end">
                                 <button class="btn btn-primary btn-sm z">+Add Order</button>
                             </a>
-                        </div> --}}
+                        </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="ordersTable" class="display expandable-table" style="width:100%">

@@ -48,6 +48,7 @@
             showConfirmButton: false,
             timer: 5000,
             timerProgressBar: true,
+            imageSize: '50x50',
             didOpen: (toast) => {
                 toast.addEventListener('mouseenter', Swal.stopTimer)
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -74,7 +75,8 @@
         .borderBox {
             border: 1px dotted black;
         }
-        .font-12{
+
+        .font-12 {
             font-size: 12px !important;
         }
     </style>

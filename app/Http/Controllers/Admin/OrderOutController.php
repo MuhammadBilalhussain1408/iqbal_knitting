@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Party;
 use Illuminate\Http\Request;
 
-class OrderOutController extends Controller
+class   OrderOutController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +21,8 @@ class OrderOutController extends Controller
      */
     public function create()
     {
-        return view('admin.order_out.create');
+        $parties = Party::all();
+        return view('admin.order_out.create',compact('parties'));
     }
 
     /**

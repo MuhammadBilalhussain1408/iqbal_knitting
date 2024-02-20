@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Party;
+use App\Models\Order;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -122,5 +123,10 @@ class PartyController extends Controller
     {
         $threads = Thread::where('party_id', $id)->get();
         return response()->json(['data' => $threads]);
+    }
+    public function getPartyOrders($id)
+    {
+        $orders = Order::where('party_id', $id)->where('order_status','!=','delivered')->get();
+        return response()->json(['data' => $orders]);
     }
 }

@@ -9,31 +9,31 @@
                 <i class="fa fa-tachometer-alt me-1"></i>Dashboard
             </a>
             <div
-                class="nav-item dropdown my-1 {{ Request::is('admin/user*', 'admin/role*', 'admin/permissions*') ? 'active' : '' }}">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                class="nav-item dropdown my-1">
+                <a href="#" class="nav-link dropdown-toggle {{ Request::is('admin/user', 'admin/role', 'admin/permissions') ? 'show active' : '' }}" data-bs-toggle="dropdown">
                     <i class="far fa-user-circle me-1"></i>User</a>
-                <div class="dropdown-menu bg-transparent border-0">
+                <div class="dropdown-menu bg-transparent border-0 {{ Request::is('admin/user', 'admin/role', 'admin/permissions') ? 'show active' : '' }}">
                     <a href="{{ route('admin.role.index') }}"
-                        class="dropdown-item ms-4 {{ Request::is('admin/role*') ? 'active' : '' }}">
+                        class="dropdown-item ms-2 {{ Request::is('admin/role') ? 'active' : '' }}">
                         <i class="fa fa-circle me-3 ms-1 font-12"></i>Role</a>
                     <a href="{{ route('admin.permissions.index') }}"
-                        class="dropdown-item ms-4 {{ Request::is('admin/permissions*') ? 'active' : '' }}">
+                        class="dropdown-item ms-2 {{ Request::is('admin/permissions') ? 'active' : '' }}">
                         <i class="fa fa-circle me-3 ms-1 font-12"></i>Permission</a>
                     <a href="{{ route('admin.users.index') }}"
-                        class="dropdown-item ms-4 {{ Request::is('admin/users*') ? 'active' : '' }}">
+                        class="dropdown-item ms-2 {{ Request::is('admin/users') ? 'active' : '' }}">
                         <i class="fa fa-circle me-3 ms-1 font-12"></i>User</a>
                 </div>
             </div>
             <div
-                class="nav-item dropdown my-1 {{ Request::is('admin/billing*', 'admin/order*', 'admin/order_out*') ? 'active' : '' }}">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                class="nav-item dropdown my-1">
+                <a href="#" class="nav-link dropdown-toggle {{ (Request::is('admin/order') || Request::is('admin/order_out')) ? 'show active' : '' }}" data-bs-toggle="dropdown">
                     <i class="fa fa-th me-1"></i>Billing</a>
-                <div class="dropdown-menu bg-transparent border-0">
+                <div class="dropdown-menu bg-transparent border-0 {{ (Request::is('admin/order') || Request::is('admin/order_out')) ? 'show active' : '' }}">
                     <a href="{{ route('admin.order.index') }}"
-                        class="dropdown-item ms-4 {{ Request::is('admin/order*') ? 'active' : '' }}">
+                        class="dropdown-item ms-2 {{ Request::is('admin/order') ? 'active' : '' }}">
                         <i class="fas fa-wallet me-3 ms-1 font-12"></i>Order In</a>
                     <a href="{{ route('admin.order_out.index') }}"
-                        class="dropdown-item ms-4 {{ Request::is('admin/order_out*') ? 'active' : '' }}">
+                        class="dropdown-item ms-2 {{ Request::is('admin/order_out') ? 'active' : '' }}">
                         <i class="fas fa-wallet me-3 ms-1 font-12"></i>Order Out</a>
                 </div>
             </div>
