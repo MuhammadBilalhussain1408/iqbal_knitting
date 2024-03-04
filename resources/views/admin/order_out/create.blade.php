@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="container-fluid pt-4 px-4" style="margin-bottom: 80px">
+    <div class="container-fluid pt-4" style="margin-bottom: 80px">
         <div class="bg-light text-center rounded p-4 pb-5">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Add Order Out</h6>
@@ -18,10 +18,29 @@
                     </select>
                 </div>
                 <div class="col-md-4 d-none" id="partyOrdersDiv">
-                    <label for="party_orders" class="form-label">Orders</label>
-                    <select name="party_orders" id="party_orders" class="form-control" onchange="getPartyOrders()">
+                    <label for="party_order" class="form-label">Orders</label>
+                    <select name="party_order" id="party_order" class="form-control" onchange="getOrderDetail()">
                         <option value="">Select Order No</option>
                     </select>
+                </div>
+            </div>
+            <div class="row  d-none" id="orderDetailDiv">
+                <div class="col-md-12">
+                    <table class="text-center table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#.</th>
+                                <th>Thread Name</th>
+                                <th>Weight</th>
+                                <th>Delivered Weight</th>
+                                <th>Order Out Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dynamicRow">
+
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary ms-auto d-flex" onclick="orderOutSubmit()">Submit</button>
                 </div>
             </div>
         </div>
@@ -60,18 +79,58 @@
                         let data = response.data;
                         if (data.length > 0) {
                             $("#partyOrdersDiv").removeClass('d-none');
-                            $('#party_orders').html('');
-                            $('#party_orders').append(`
+                            $('#party_order').html('');
+                            $('#party_order').append(`
                                 <option value="">Select Order No</option>
                             `);
                             data.forEach(i => {
-                                $('#party_orders').append(`
+                                $('#party_order').append(`
                                     <option value="${i.id}">#${i.id}</option>
                                 `);
                             });
                         } else {
                             $("#partyOrdersDiv").addClass('d-none');
                             Toast.fire('', 'No Order In of this Party available for Order Out', 'error');
+                        }
+                    }
+                });
+            } else {
+                $("#partyDetails").addClass('d-none');
+            }
+            // getPartyThreads(0);
+        }
+
+        function getOrderDetail() {
+            let id = $('#party_order option:selected').val();
+            if (id) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url('admin/order-detail/') }}" + '/' + id,
+                    data: {},
+                    success: function(response) {
+                        let data = response.data;
+                        $('#dynamicRow').html('');
+                        if (data.length > 0) {
+                            $('#orderDetailDiv').removeClass('d-none');
+                            data.forEach((i, index) => {
+                                $('#dynamicRow').append(`
+                                <tr class="classabc">
+                                    <td>${i.id}</td>
+                                    <td>${i.thread.name}</td>
+                                    <td>${i.net_weight} KG</td>
+                                    <td>${i.delivered_weight ? i.delivered_weight : 0} KG</td>
+                                    <td>
+                                        <input type="hidden" name="orderItemId${index}" id="orderItemId${index}"  value="${i.id}" />
+                                        <input type="hidden" name="orderItemThread${index}" id="orderItemThread${index}"  value="${i.thread.id}" />
+                                        <input type="text" class="form-control" name="orderOutWeight${index}" id="orderOutWeight${index}" />
+                                    </td>
+                                </tr>
+                            `)
+                            })
+
+                        } else {
+                            $('#orderDetailDiv').addClass('d-none');
+                            Toast.fire('', 'No Order items available', 'error');
                         }
                     }
                 });
@@ -103,40 +162,33 @@
             }
         }
 
-        let orderForm = $('#OrderForm');
-        orderForm.submit(function(e) {
-            e.preventDefault();
+        function orderOutSubmit() {
             let dataCount = $('#dynamicRow tr.classabc').length;
             let items = [];
 
             for (let i = 0; i < dataCount; i++) {
                 let obj = {
-                    'thread_id': $('#thread' + i).val(),
-                    'num_of_boxes': $('#boxes' + i).val(),
-                    'net_weight': $('#net_weight' + i).val(),
-                    'total_net_weight': $('#total_net_weight' + i).val(),
+                    'order_out_weight': $('#orderOutWeight' + i).val(),
+                    'order_item_id': $('#orderItemId' + i).val(),
+                    'thread_id': $('#orderItemThread' + i).val(),
                 };
                 items.push(obj);
             }
 
-
             $.ajax({
-                url: "{{ route('admin.order.store') }}",
+                url: "{{ route('admin.order_out.store') }}",
                 type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}",
                     'party_id': $('#party').val(),
-                    'order_date': $('#order_date').val(),
-                    'net_weight': $('#totalNetWeight').text(),
-                    'boxes': $('#totalBox').text(),
-                    'estimated_delivery_date': $('#estimated_delivery_date').val(),
+                    'order_id': $('#party_order').val(),
                     'items': items
                 },
                 success: function(result) {
                     Toast.fire('success', result.message, 'success');
-                    window.location.href = "{{ route('admin.order.index') }}";
+                    window.location.href = "{{ route('admin.order_out.index') }}";
                 }
             });
-        });
+        }
     </script>
 @endpush

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('order_out_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_out_id')->nullable();
+            $table->unsignedBigInteger('order_in_item_id')->nullable();
             $table->unsignedBigInteger('thread_id')->nullable();
             $table->unsignedBigInteger('num_of_boxes')->nullable();
-            $table->double('total_weight',10,2)->nullable();
-            $table->integer('deliver_boxes')->nullable();
+            $table->double('weight',10,2)->nullable();
             $table->timestamps();
         });
     }

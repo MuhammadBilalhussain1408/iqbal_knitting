@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('order_outs', function (Blueprint $table) {
             $table->id();
             $table->integer('order_id')->nullable();
-            $table->integer('boxes')->nullable();
-            $table->integer('net_weight')->nullable();
+            $table->integer('party_id')->nullable();
+            $table->integer('total_boxes')->nullable();
+            $table->integer('total_net_weight')->nullable();
             $table->text('status')->nullable();
             $table->timestamps();
         });
