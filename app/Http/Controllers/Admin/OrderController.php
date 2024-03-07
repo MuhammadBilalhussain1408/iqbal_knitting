@@ -27,7 +27,12 @@ class OrderController extends Controller
     }
     public function getAllOrder()
     {
-        $order = Order::query()->with(['Party']);
+        $party_id = request('party_id');
+        if ($party_id) {
+            $order = Order::query()->with(['Party'])->where('party_id', $party_id);
+        } else {
+            $order = [];
+        }
         return DataTables::of($order)->addIndexColumn()
             ->addColumn('id', function ($row) {
                 return $row->id;
@@ -52,7 +57,7 @@ class OrderController extends Controller
             'boxes' => 'required',
         ]);
         $storeArr = $request->except(['_token', 'items']);
-        $storeArr['order_by']=auth()->id();
+        $storeArr['order_by'] = auth()->id();
         $order = Order::create($storeArr);
         foreach ($request->items as $item) {
             $item['order_id'] = $order->id;
@@ -84,6 +89,4 @@ class OrderController extends Controller
         $order = Order::with(['OrderItems.Thread', 'Party'])->where('id', $id)->first();
         return view('admin.order.view_order', compact('order'));
     }
-
-
 }

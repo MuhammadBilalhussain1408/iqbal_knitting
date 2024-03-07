@@ -58,6 +58,7 @@ class   OrderOutController extends Controller
             'order_id' => $request->order_id,
             'party_id' => $request->party_id,
         ]);
+        $total_net_weight = 0;
         foreach ($request->items as $item) {
             $orderItem = OrderItem::where('id', $item['order_item_id'])->first();
             $newDeliveredWeight = $item['order_out_weight'] + $orderItem->delivered_weight;
@@ -70,7 +71,11 @@ class   OrderOutController extends Controller
                 'thread_id' => $item['thread_id'],
                 'weight' => $item['order_out_weight']
             ]);
+            $total_net_weight = $total_net_weight + $item['order_out_weight'];
         }
+        OrderOut::where('id',$orderOut->id)->update([
+            'total_net_weight' => $total_net_weight
+        ]);
         return response()->json(['message' => 'Order created successfully']);
     }
 

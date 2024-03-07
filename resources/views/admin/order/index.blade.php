@@ -16,17 +16,19 @@ Copy code
                             {{-- @endcan --}}
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="partySelect">Select Party:</label>
-                                <select class="form-control" id="partySelect" onchange="fetchPartyData(this.value)">
-                                    <option value="">Select Party</option>
-                                    {{-- Populate options dynamically --}}
-                                    @foreach ($parties as $party)
-                                        <option value="{{ $party->id }}">{{ $party->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="partySelect">Select Party:</label>
+                                    <select class="form-control" id="partySelect" onchange="fetchPartyData()">
+                                        <option value="">Select Party</option>
+                                        {{-- Populate options dynamically --}}
+                                        @foreach ($parties as $party)
+                                            <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-6 d-none borderBox"  id="partyData"> {{-- Container to display party data --}}
+                            <div class="col-md-12 mt-5 borderBox" id="partyData"> {{-- Container to display party data --}}
                                 <div class="table-responsive">
                                     <table id="ordersTable" class="display expandable-table" style="width:100%">
                                         <thead>
@@ -51,15 +53,20 @@ Copy code
 @endsection
 @push('scripts')
     <script type="text/javascript">
+        let table = null;
         $(document).ready(function() {
-            $('#ordersTable').DataTable({
+            table = $('#ordersTable').DataTable({
                 'language': {
                     'searchPlaceholder': "Order ID"
                 },
-
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllOrder') }}",
+                "ajax": {
+                    "url": "{{ route('admin.getAllOrder') }}",
+                    "data": function(d) {
+                        d.party_id = $('#partySelect').val()
+                    }
+                },
                 "columns": [{
                         data: 'id',
                         name: 'id'
@@ -102,34 +109,35 @@ Copy code
 
 
         $('#partySelect').change(function() {
-
+            table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
-            if (partyId) {
-                fetchPartyData(partyId); // Fetch party data
-            }
+
+            // if (partyId) {
+            //     fetchPartyData(partyId); // Fetch party data
+            // }
         });
 
-       // Function to fetch party data
-        function fetchPartyData(partyId) {
+        // Function to fetch party data
+        // function fetchPartyData(partyId) {
 
-        $.ajax({
-            type: "GET",
-            url: "{{ route('admin.getPartyData', ':partyId') }}".replace(':partyId', partyId),
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "{{ route('admin.getPartyData', ':partyId') }}".replace(':partyId', partyId),
 
-            success: function(response) {
-                console.log("Received party data response:", response);
-                $('#partyData').empty(); // Clear any existing content
-                $('#partyData').append(response.data); // Append party data to #partyData element
-                $('#ordersTable').addClass('d-none');
-                $('.borderBox').removeClass('d-none');
+        //         success: function(response) {
+        //             console.log("Received party data response:", response);
+        //             $('#partyData').empty(); // Clear any existing content
+        //             $('#partyData').append(response.data); // Append party data to #partyData element
+        //             $('#ordersTable').addClass('d-none');
+        //             $('.borderBox').removeClass('d-none');
 
-            },
-            error: function(xhr, status, error) {
-            console.error("Error fetching party data:", error);
-        }
-        });
-    }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Error fetching party data:", error);
+        //         }
+        //     });
+        // }
 
         function deleteConfirmation(id) {
             swal.fire({

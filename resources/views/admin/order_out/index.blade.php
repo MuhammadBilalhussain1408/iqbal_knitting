@@ -18,10 +18,8 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>order date</th>
-                                            <th>Total Graph Weight</th>
+                                            <th>Party Name</th>
                                             <th>Total Weight</th>
-                                            <th>Total Boxes</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -35,7 +33,7 @@
     </div>
 @endsection
 @push('scripts')
-    {{-- <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function() {
             $('#ordersTable').DataTable({
                 'language': {
@@ -43,27 +41,19 @@
                 },
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllOrder') }}",
+                "ajax": "{{ route('admin.getAllOrderOut') }}",
                 "columns": [
                     {
                         data: 'id',
                         name: 'id'
                     },
                     {
-                        data: 'order_date',
-                        name: 'order_date'
+                        data: 'party_name',
+                        name: 'party_name'
                     },
                     {
-                        data: 'total_graph_weight',
-                        name: 'total_graph_weight'
-                    },
-                    {
-                        data: 'total_weight',
-                        name: 'total_weight'
-                    },
-                    {
-                        data: 'total_boxes',
-                        name: 'total_boxes'
+                        data: 'total_net_weight',
+                        name: 'total_net_weight'
                     },
                     {
                         data: 'action',
@@ -79,6 +69,10 @@
                     },
                     {
                         "targets": 1,
+                        "className": "text-start",
+                    },
+                    {
+                        "targets": 2,
                         "className": "text-start",
                     },
                 ]
@@ -119,5 +113,5 @@
                 }
             });
         }
-    </script> --}}
+    </script>
 @endpush
