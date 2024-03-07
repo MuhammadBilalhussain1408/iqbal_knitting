@@ -20,7 +20,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-8 text-left d-none borderBox" id="partyDetails">
+                    <div class="col-md-8" id="partyDetails">
                         <b>Party Details</b>
                         <div class="row">
                             <div class="col-md-6">

@@ -58,14 +58,21 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('delivery', DeliveryController::class);
 
         Route::resource('users', UserController::class);
+        Route::get('get-party-data/{id}', [PartyController::class, 'getPartyData'])->name('getPartyData');
         Route::get('order-detail/{id}', [OrderOutController::class, 'orderDetail'])->name('orderDetail');
         Route::get('users-all', [UserController::class, 'getAllUser'])->name('getAllUser');
+
         Route::get('party-all', [PartyController::class, 'getAllParties'])->name('getAllParties');
         Route::get('party-orders/{id}', [PartyController::class, 'getPartyOrders'])->name('getPartyOrders');
         Route::get('party-threads/{id}', [PartyController::class, 'getPartyThreads'])->name('getPartyThreads');
+
+
+
+        // Orders Routes
         Route::get('order-all', [OrderController::class, 'getAllOrder'])->name('getAllOrder');
         Route::get('order-out-all', [OrderOutController::class, 'getAllOrderOut'])->name('getAllOrderOut');
         Route::get('order-view/{id}', [OrderController::class, 'viewOrder'])->name('order.view');
+        // Route::get('get-party-data/{id}', [OrderController::class, 'getPartyData'])->name('getPartyData');
         Route::get('thread-all', [ThreadController::class, 'getAllThreads'])->name('getAllThreads');
         Route::get('thread-by-id/{id}', [ThreadController::class, 'getThreadById'])->name('getThreadById');
     });

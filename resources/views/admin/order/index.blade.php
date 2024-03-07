@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 
+Copy code
 @section('content')
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
@@ -15,19 +16,31 @@
                             {{-- @endcan --}}
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="ordersTable" class="display expandable-table" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Order Date</th>
-                                            <th>Party Name</th>
-                                            <th>Total Weight</th>
-                                            <th>Total Boxes</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                            <div class="form-group">
+                                <label for="partySelect">Select Party:</label>
+                                <select class="form-control" id="partySelect" onchange="fetchPartyData(this.value)">
+                                    <option value="">Select Party</option>
+                                    {{-- Populate options dynamically --}}
+                                    @foreach ($parties as $party)
+                                        <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6 d-none borderBox"  id="partyData"> {{-- Container to display party data --}}
+                                <div class="table-responsive">
+                                    <table id="ordersTable" class="display expandable-table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Order Date</th>
+                                                <th>Party Name</th>
+                                                <th>Total Weight</th>
+                                                <th>Total Boxes</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -43,11 +56,11 @@
                 'language': {
                     'searchPlaceholder': "Order ID"
                 },
+
                 "processing": true,
                 "serverSide": true,
                 "ajax": "{{ route('admin.getAllOrder') }}",
-                "columns": [
-                    {
+                "columns": [{
                         data: 'id',
                         name: 'id'
                     },
@@ -86,6 +99,37 @@
                 ]
             });
         });
+
+
+        $('#partySelect').change(function() {
+
+            // alert('retre');
+            var partyId = $(this).val(); // Get selected party ID
+            if (partyId) {
+                fetchPartyData(partyId); // Fetch party data
+            }
+        });
+
+       // Function to fetch party data
+        function fetchPartyData(partyId) {
+
+        $.ajax({
+            type: "GET",
+            url: "{{ route('admin.getPartyData', ':partyId') }}".replace(':partyId', partyId),
+
+            success: function(response) {
+                console.log("Received party data response:", response);
+                $('#partyData').empty(); // Clear any existing content
+                $('#partyData').append(response.data); // Append party data to #partyData element
+                $('#ordersTable').addClass('d-none');
+                $('.borderBox').removeClass('d-none');
+
+            },
+            error: function(xhr, status, error) {
+            console.error("Error fetching party data:", error);
+        }
+        });
+    }
 
         function deleteConfirmation(id) {
             swal.fire({

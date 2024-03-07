@@ -14,8 +14,11 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return view('admin.order.index');
+        // exit('ferf');
+        $parties = Party::all();
+        return view('admin.order.index', compact('parties'));
     }
+
     public function create()
     {
         $threads = Thread::all();
@@ -67,11 +70,11 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
 
-        // $request->validate([
-        //     'order_date' => 'required',
-        //     'net_weight' => 'required',
-        //     'boxes' => 'required',
-        // ]);
+        $request->validate([
+            'order_date' => 'required',
+            'net_weight' => 'required',
+            'boxes' => 'required',
+        ]);
     }
     public function destory(Request $request)
     {
@@ -81,4 +84,6 @@ class OrderController extends Controller
         $order = Order::with(['OrderItems.Thread', 'Party'])->where('id', $id)->first();
         return view('admin.order.view_order', compact('order'));
     }
+
+
 }
