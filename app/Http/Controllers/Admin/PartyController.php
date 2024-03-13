@@ -16,7 +16,7 @@ class PartyController extends Controller
      */
     public function index()
     {
-        
+
         return view('admin.party.index');
     }
 
@@ -126,8 +126,9 @@ class PartyController extends Controller
     }
     public function getPartyOrders($id)
     {
-        $orders = Order::where('party_id', $id)->where('order_status','!=','delivered')->get();
-        return response()->json(['data' => $orders]);
+        $orders = Order::where('party_id', $id)->where('order_status', '!=', 'delivered')->get();
+        $party = Party::where('id', $id)->first();
+        return response()->json(['data' => $orders, 'party' => $party]);
     }
 
     // public function getPartyData($id)
@@ -137,17 +138,16 @@ class PartyController extends Controller
     // }
 
     public function getPartyData($id)
-{
+    {
 
-    $party = Party::find($id);
+        $party = Party::find($id);
 
-    if ($party) {
+        if ($party) {
 
-        return response()->json(['data' => $party]);
-    } else {
+            return response()->json(['data' => $party]);
+        } else {
 
-        return response()->json(['error' => 'Party not found'], 404);
+            return response()->json(['error' => 'Party not found'], 404);
+        }
     }
-}
-
 }

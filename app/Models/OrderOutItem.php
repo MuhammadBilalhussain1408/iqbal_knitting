@@ -9,5 +9,8 @@ class OrderOutItem extends Model
 {
     use HasFactory;
     public $guarded=[];
-
+    public function Thread()
+    {
+        return $this->belongsTo(Thread::class);
+    }
 }

@@ -31,9 +31,10 @@
                             <tr>
                                 <th scope="col">#.</th>
                                 <th>Thread Name</th>
-                                <th>Weight</th>
+                                <th>Total Weight</th>
                                 <th>Delivered Weight</th>
                                 <th>Order Out Weight</th>
+                                <th>Wastage <small>(if exist)</small></th>
                             </tr>
                         </thead>
                         <tbody id="dynamicRow">
@@ -49,6 +50,8 @@
 
 @push('scripts')
     <script>
+        let wastage_percentage = 0;
+
         function getThread(index) {
             let id = $('#thread' + index).val();
             console.log(index, id);
@@ -77,6 +80,8 @@
                     data: {},
                     success: function(response) {
                         let data = response.data;
+                        let party = response.party;
+                        wastage_percentage = party.wastage_percentage;
                         if (data.length > 0) {
                             $("#partyOrdersDiv").removeClass('d-none');
                             $('#party_order').html('');
@@ -117,13 +122,14 @@
                                 <tr class="classabc">
                                     <td>${i.id}</td>
                                     <td>${i.thread.name}</td>
-                                    <td>${i.net_weight} KG</td>
+                                    <td>${i.total_net_weight} KG</td>
                                     <td>${i.delivered_weight ? i.delivered_weight : 0} KG</td>
                                     <td>
                                         <input type="hidden" name="orderItemId${index}" id="orderItemId${index}"  value="${i.id}" />
                                         <input type="hidden" name="orderItemThread${index}" id="orderItemThread${index}"  value="${i.thread.id}" />
-                                        <input type="text" class="form-control" name="orderOutWeight${index}" id="orderOutWeight${index}" />
+                                        <input type="text" oninput="calculateWastage(${index})" class="form-control" name="orderOutWeight${index}" id="orderOutWeight${index}" />
                                     </td>
+                                    <td id="wastageCol${index}"></td>
                                 </tr>
                             `)
                             })
@@ -138,6 +144,12 @@
                 $("#partyDetails").addClass('d-none');
             }
             // getPartyThreads(0);
+        }
+
+        function calculateWastage(index) {
+            let weight = $('#orderOutWeight' + index).val();
+            let calculatedWastage = wastage_percentage * (weight / 100);
+            $('#wastageCol' + index).html(calculatedWastage);
         }
 
         function getPartyThreads(index) {

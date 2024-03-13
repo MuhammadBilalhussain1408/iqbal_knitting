@@ -10,8 +10,10 @@ use App\Models\OrderOutItem;
 use App\Models\Party;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
 
-class   OrderOutController extends Controller
+
+class OrderOutController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,8 +43,8 @@ class   OrderOutController extends Controller
                 return $row->Party ? $row->Party->name : '';
             })
             ->addColumn('action', function ($row) {
-                $btn = '<a href="' . route('admin.order.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
-                $btn = '<a href="' . route('admin.order.view', $row->id) . '" class="btn btn-primary btn-sm">View</a>';
+                $btn = '<a href="' . route('admin.order_out.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
+                $btn = '<a href="' . route('admin.orderOut.view', $row->id) . '" class="btn btn-primary btn-sm">View</a>';
                 // $btn = $btn . '<a  class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
                 return $btn;
             })
@@ -115,5 +117,16 @@ class   OrderOutController extends Controller
     {
         $order = OrderItem::with(['Thread'])->where('order_id', $id)->get();
         return response()->json(['data' => $order]);
+    }
+    public function download()
+    {
+        $pdf = Pdf::loadView('pdf');
+
+        return $pdf->download();
+    }
+    public function viewOrderOut($id)
+    {
+        $order = OrderOut::with(['OrderItems.Thread', 'Party'])->where('id', $id)->first();
+        return view('admin.order_out.view_order', compact('order'));
     }
 }

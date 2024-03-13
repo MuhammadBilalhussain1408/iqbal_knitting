@@ -71,6 +71,7 @@ Route::group(['prefix' => 'admin'], function () {
         // Orders Routes
         Route::get('order-all', [OrderController::class, 'getAllOrder'])->name('getAllOrder');
         Route::get('order-out-all', [OrderOutController::class, 'getAllOrderOut'])->name('getAllOrderOut');
+        Route::get('order-out-view/{id}', [OrderOutController::class, 'viewOrderOut'])->name('orderOut.view');
         Route::get('order-view/{id}', [OrderController::class, 'viewOrder'])->name('order.view');
         // Route::get('get-party-data/{id}', [OrderController::class, 'getPartyData'])->name('getPartyData');
         Route::get('thread-all', [ThreadController::class, 'getAllThreads'])->name('getAllThreads');
