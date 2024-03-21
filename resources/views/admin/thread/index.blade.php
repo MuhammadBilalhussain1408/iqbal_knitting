@@ -10,7 +10,7 @@
                             Threads
                             {{-- @can('user-create') --}}
                                 <a href="{{ route('admin.thread.create') }}" class="btn-datatable float-end"><button
-                                        class="btn btn-primary btn-sm z">+Add Thread</button></a>
+                                        class="btn btn-primary btn-sm">+Add Thread</button></a>
                             {{-- @endcan --}}
                         </div>
                         <div class="card-body">
@@ -44,6 +44,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": "{{ route('admin.getAllThreads') }}",
+                "pageLength": 5, // Set number of records per page
 
                 "columns": [
                     {
@@ -69,6 +70,7 @@
                         searchable: false,
 
                     },
+                
                 ],
                 'columnDefs': [{
                         "targets": 0,

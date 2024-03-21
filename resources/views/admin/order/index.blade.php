@@ -67,6 +67,8 @@ Copy code
                         d.party_id = $('#partySelect').val()
                     }
                 },
+
+                "pageLength": 5,
                 "columns": [{
                         data: 'id',
                         name: 'id'

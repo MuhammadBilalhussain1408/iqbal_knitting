@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Party;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class ThreadController extends Controller
 {
     /**

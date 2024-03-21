@@ -42,6 +42,7 @@
                 "processing": true,
                 "serverSide": true,
                 "ajax": "{{ route('admin.getAllOrderOut') }}",
+                "pageLength": 5,
                 "columns": [
                     {
                         data: 'id',
