@@ -16,8 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('thread_id')->nullable();
             $table->unsignedBigInteger('num_of_boxes')->nullable();
-            $table->double('total_weight',10,2)->nullable();
-            $table->integer('deliver_boxes')->nullable();
+            $table->double('net_weight', 10, 2)->nullable();
+            $table->double('total_net_weight', 10, 2)->nullable();
+            $table->double('delivered_weight', 10, 2)->nullable();
             $table->timestamps();
         });
     }

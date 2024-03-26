@@ -39,6 +39,9 @@ class OrderOutController extends Controller
             ->addColumn('id', function ($row) {
                 return $row->id;
             })
+            ->addColumn('created_at', function ($row) {
+                return $row->created_at->format('Y-m-d');
+            })
             ->addColumn('party_name', function ($row) {
                 return $row->Party ? $row->Party->name : '';
             })
@@ -59,26 +62,51 @@ class OrderOutController extends Controller
         $orderOut = OrderOut::create([
             'order_id' => $request->order_id,
             'party_id' => $request->party_id,
+            'total_net_weight' => $request->total_net_weight,
+            'total_out_weight' => $request->total_out_weight,
+            'total_wastage' => $request->total_wastage,
         ]);
-        $total_net_weight = 0;
         foreach ($request->items as $item) {
             $orderItem = OrderItem::where('id', $item['order_item_id'])->first();
             $newDeliveredWeight = $item['order_out_weight'] + $orderItem->delivered_weight;
-            OrderItem::where('id', $item['order_item_id'])->update([
-                'delivered_weight' => $newDeliveredWeight
-            ]);
-            OrderOutItem::create([
-                'order_out_id' => $orderOut->id,
-                'order_in_item_id' => $item['order_item_id'],
-                'thread_id' => $item['thread_id'],
-                'weight' => $item['order_out_weight']
-            ]);
-            $total_net_weight = $total_net_weight + $item['order_out_weight'];
+            // if ($orderItem->delivered_weight == $newDeliveredWeight) {
+                OrderItem::where('id', $item['order_item_id'])->update([
+                    'delivered_weight' => $newDeliveredWeight
+                ]);
+                OrderOutItem::create([
+                    'order_out_id' => $orderOut->id,
+                    'order_in_item_id' => $item['order_item_id'],
+                    'thread_id' => $item['thread_id'],
+                    'weight' => $item['order_out_weight'],
+                    'wastage' => $item['wastage']
+                ]);
+            // }
         }
-        OrderOut::where('id',$orderOut->id)->update([
-            'total_net_weight' => $total_net_weight
-        ]);
+        $this->changeOrderStatus($request->order_id);
         return response()->json(['message' => 'Order created successfully']);
+    }
+
+    public function changeOrderStatus($orderId)
+    {
+        $order = Order::with(['OrderItems'])->where('id', $orderId)->first();
+        $isDelivered = false;
+        foreach ($order->OrderItems as $i) {
+            if ($i->delivered_weight == $i->total_net_weight) {
+                $isDelivered = true;
+            } else {
+                $isDelivered = false;
+            }
+        }
+
+        if ($isDelivered) {
+            Order::where('id', $orderId)->update([
+                'order_status' => 'delivered'
+            ]);
+        } else {
+            Order::where('id', $orderId)->update([
+                'order_status' => 'partially_delivered'
+            ]);
+        }
     }
 
     /**
@@ -118,8 +146,9 @@ class OrderOutController extends Controller
         $order = OrderItem::with(['Thread'])->where('order_id', $id)->get();
         return response()->json(['data' => $order]);
     }
-    public function download()
+    public function printOrderOut($id)
     {
+        dd($id);
         $pdf = Pdf::loadView('pdf');
 
         return $pdf->download();

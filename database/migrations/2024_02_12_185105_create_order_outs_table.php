@@ -16,7 +16,9 @@ return new class extends Migration
             $table->integer('order_id')->nullable();
             $table->integer('party_id')->nullable();
             $table->integer('total_boxes')->nullable();
-            $table->integer('total_net_weight')->nullable();
+            $table->double('total_net_weight',10,2)->nullable();
+            $table->double('total_out_weight',10,2)->nullable();
+            $table->double('total_wastage',10,2)->nullable();
             $table->text('status')->nullable();
             $table->timestamps();
         });

@@ -20,6 +20,8 @@
                                             <th>#</th>
                                             <th>Party Name</th>
                                             <th>Total Weight</th>
+                                            <th>Total Out Weight</th>
+                                            <th>Order Out Date</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -55,6 +57,14 @@
                     {
                         data: 'total_net_weight',
                         name: 'total_net_weight'
+                    },
+                    {
+                        data: 'total_out_weight',
+                        name: 'total_out_weight'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
                     },
                     {
                         data: 'action',

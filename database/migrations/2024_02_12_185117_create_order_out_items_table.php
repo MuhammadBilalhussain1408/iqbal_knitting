@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('thread_id')->nullable();
             $table->unsignedBigInteger('num_of_boxes')->nullable();
             $table->double('weight',10,2)->nullable();
+            $table->double('wastage',10,2)->nullable();
             $table->timestamps();
         });
     }

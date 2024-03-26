@@ -6,8 +6,9 @@
             <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card mt-3">
-                        <div class="card-header text-start">
-                            Order Details
+                        <div class="card-header text-start d-flex justify-content-between">
+                            <span>Order Details</span>
+                            <a href="{{ route('admin.orderOut.print', $order->id) }}" class="btn btn-info text-white">Print</a>
                         </div>
                         <div class="card-body">
                             <div class="row" style="border:1px dotted gray">
@@ -64,7 +65,8 @@
                             </div>
                             <div class="table-responsive mt-5">
                                 {{-- <b>Thread Details</b> --}}
-                                <table id="ordersTable" class="display expandable-table table table-bordered" style="width:100%">
+                                <table id="ordersTable" class="display expandable-table table table-bordered"
+                                    style="width:100%">
                                     <thead>
                                         <tr class="text-start">
                                             <th colspan="5">Thread Details</th>
@@ -77,8 +79,8 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($order->OrderItems as $index => $item)
-                                        <tr>
-                                                <td>{{ $index + 1}}</td>
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
                                                 <td>{{ $item->Thread?->name }}</td>
                                                 <td>{{ $item->weight }}</td>
                                             </tr>

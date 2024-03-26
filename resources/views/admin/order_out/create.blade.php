@@ -41,8 +41,47 @@
 
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-primary ms-auto d-flex" onclick="orderOutSubmit()">Submit</button>
                 </div>
+                <div class="col-md-12">
+                    <div class="row mt-5 mb-5">
+                        <div class="col-md-7"></div>
+                        <div class="col-md-5 text-left borderBox" id="OrderDetails">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <b>Total Net Weight:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span id="totalNetWeight">0</span> KG
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <b>Total Wastage:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span id="totalWastage">0</span> KG
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <b>Total Out Weight:</b>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span id="totalOutWeight">0</span> KG
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary ms-auto " onclick="orderOutSubmit()">Submit</button>
             </div>
         </div>
     </div>
@@ -115,6 +154,7 @@
                     success: function(response) {
                         let data = response.data;
                         $('#dynamicRow').html('');
+                        calculateOrderDetail();
                         if (data.length > 0) {
                             $('#orderDetailDiv').removeClass('d-none');
                             data.forEach((i, index) => {
@@ -127,13 +167,13 @@
                                     <td>
                                         <input type="hidden" name="orderItemId${index}" id="orderItemId${index}"  value="${i.id}" />
                                         <input type="hidden" name="orderItemThread${index}" id="orderItemThread${index}"  value="${i.thread.id}" />
-                                        <input type="text" oninput="calculateWastage(${index})" class="form-control" name="orderOutWeight${index}" id="orderOutWeight${index}" />
+                                        <input type="text" oninput="calculateWastage(${index}), calculateOrderDetail(), weightChecking(${index})" class="form-control" name="orderOutWeight${index}" id="orderOutWeight${index}"
+                                         data-maxWeight="${i.total_net_weight - (i.delivered_weight ? i.delivered_weight : 0)}"/>
                                     </td>
                                     <td id="wastageCol${index}"></td>
                                 </tr>
                             `)
                             })
-
                         } else {
                             $('#orderDetailDiv').addClass('d-none');
                             Toast.fire('', 'No Order items available', 'error');
@@ -177,30 +217,81 @@
         function orderOutSubmit() {
             let dataCount = $('#dynamicRow tr.classabc').length;
             let items = [];
+            let isContinue = false;
+            for (let i = 0; i < dataCount; i++) {
+                let weight = $('#orderOutWeight' + i).val();
+                if (weight > 0) {
+                    isContinue = true;
+                }
+            }
+            if (isContinue) {
+                for (let i = 0; i < dataCount; i++) {
+                let weight = $('#orderOutWeight' + i).val();
+                    if (weight > 0) {
+                        let obj = {
+                            'order_out_weight': $('#orderOutWeight' + i).val(),
+                            'order_item_id': $('#orderItemId' + i).val(),
+                            'thread_id': $('#orderItemThread' + i).val(),
+                            'wastage': $('#wastageCol' + i).text(),
+                        };
+                        items.push(obj);
+                    }
+                }
+
+                $.ajax({
+                    url: "{{ route('admin.order_out.store') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        'party_id': $('#party').val(),
+                        'order_id': $('#party_order').val(),
+                        'total_net_weight': $('#totalNetWeight').text(),
+                        'total_out_weight': $('#totalOutWeight').text(),
+                        'total_wastage': $('#totalWastage').text(),
+                        'items': items
+                    },
+                    success: function(result) {
+                        Toast.fire('success', result.message, 'success');
+                        window.location.href = "{{ route('admin.order_out.index') }}";
+                    }
+                });
+            } else {
+                Toast.fire('error', 'Please Input weight in at least one item', 'error');
+            }
+        }
+
+        function calculateOrderDetail() {
+            let dataCount = $('#dynamicRow tr.classabc').length;
+            let totalNetWeight = 0;
+            let totalWastage = 0;
 
             for (let i = 0; i < dataCount; i++) {
-                let obj = {
-                    'order_out_weight': $('#orderOutWeight' + i).val(),
-                    'order_item_id': $('#orderItemId' + i).val(),
-                    'thread_id': $('#orderItemThread' + i).val(),
-                };
-                items.push(obj);
-            }
-
-            $.ajax({
-                url: "{{ route('admin.order_out.store') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    'party_id': $('#party').val(),
-                    'order_id': $('#party_order').val(),
-                    'items': items
-                },
-                success: function(result) {
-                    Toast.fire('success', result.message, 'success');
-                    window.location.href = "{{ route('admin.order_out.index') }}";
+                if ($('#orderOutWeight' + i).val()) {
+                    let wastage = $('#wastageCol' + i).text();
+                    totalWastage = totalWastage + parseFloat(wastage);
+                    totalNetWeight = totalNetWeight + parseFloat($('#orderOutWeight' + i).val());
                 }
-            });
+            }
+            totalWastage = Math.floor(totalWastage);
+            totalNetWeight = Math.floor(totalNetWeight);
+            $('#totalNetWeight').text(totalNetWeight);
+            $('#totalOutWeight').text(totalNetWeight - totalWastage);
+            $('#totalWastage').text(totalWastage);
+        }
+
+        function weightChecking(i) {
+            let maxWeight = $('#orderOutWeight' + i).attr('data-maxWeight');
+            let currentInput = $('#orderOutWeight' + i).val();
+            let currentWastage = $('#wastageCol' + i).text();
+            let currentTotal = parseFloat(currentInput) + parseFloat(currentWastage);
+
+            // console.log(maxWeight, currentInput, currentWastage, currentTotal);
+            if (parseFloat(currentInput) > maxWeight) {
+                alert("Maximum Weight to deliver is = " + maxWeight + 'kg');
+                $('#orderOutWeight' + i).val(maxWeight);
+                calculateWastage(i);
+                calculateOrderDetail()
+            }
         }
     </script>
 @endpush

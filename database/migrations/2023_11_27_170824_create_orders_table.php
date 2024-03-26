@@ -19,7 +19,6 @@ return new class extends Migration
             $table->date('estimated_delivery_date')->nullable();
             $table->integer('boxes')->nullable();
             $table->double('net_weight', 10, 2)->nullable();
-            $table->double('total_net_weight', 10, 2)->nullable();
             $table->enum('order_status', [
                 'pending', 'in_process', 'partially_delivered', 'delivered'
             ]);

@@ -16,9 +16,8 @@ Copy code
                             {{-- @endcan --}}
                         </div>
                         <div class="card-body">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="partySelect">Select Party:</label>
                                     <select class="form-control" id="partySelect" onchange="fetchPartyData()">
                                         <option value="">Select Party</option>
                                         {{-- Populate options dynamically --}}
@@ -28,7 +27,7 @@ Copy code
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-5 borderBox" id="partyData"> {{-- Container to display party data --}}
+                            <div class="col-md-12 mt-4 d-none" id="partyData"> {{-- Container to display party data --}}
                                 <div class="table-responsive">
                                     <table id="ordersTable" class="display expandable-table" style="width:100%">
                                         <thead>
@@ -111,6 +110,7 @@ Copy code
 
 
         $('#partySelect').change(function() {
+            $('#partyData').removeClass('d-none');
             table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
