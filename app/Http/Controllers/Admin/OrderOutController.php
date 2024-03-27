@@ -20,7 +20,8 @@ class OrderOutController extends Controller
      */
     public function index()
     {
-        return view('admin.order_out.index');
+        $parties = Party::all();
+        return view('admin.order_out.index', compact('parties'));
     }
 
     /**
@@ -34,7 +35,12 @@ class OrderOutController extends Controller
 
     public function getAllOrderOut()
     {
-        $order = OrderOut::query()->with(['Party']);
+        $party_id = request('party_id');
+        if ($party_id) {
+            $order = OrderOut::query()->with(['Party'])->where('party_id', $party_id);
+        } else {
+            $order = [];
+        }
         return DataTables::of($order)->addIndexColumn()
             ->addColumn('id', function ($row) {
                 return $row->id;
@@ -70,16 +76,16 @@ class OrderOutController extends Controller
             $orderItem = OrderItem::where('id', $item['order_item_id'])->first();
             $newDeliveredWeight = $item['order_out_weight'] + $orderItem->delivered_weight;
             // if ($orderItem->delivered_weight == $newDeliveredWeight) {
-                OrderItem::where('id', $item['order_item_id'])->update([
-                    'delivered_weight' => $newDeliveredWeight
-                ]);
-                OrderOutItem::create([
-                    'order_out_id' => $orderOut->id,
-                    'order_in_item_id' => $item['order_item_id'],
-                    'thread_id' => $item['thread_id'],
-                    'weight' => $item['order_out_weight'],
-                    'wastage' => $item['wastage']
-                ]);
+            OrderItem::where('id', $item['order_item_id'])->update([
+                'delivered_weight' => $newDeliveredWeight
+            ]);
+            OrderOutItem::create([
+                'order_out_id' => $orderOut->id,
+                'order_in_item_id' => $item['order_item_id'],
+                'thread_id' => $item['thread_id'],
+                'weight' => $item['order_out_weight'],
+                'wastage' => $item['wastage']
+            ]);
             // }
         }
         $this->changeOrderStatus($request->order_id);

@@ -13,13 +13,25 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select class="form-control" id="partySelect">
+                                        <option value="">Select Party</option>
+                                        {{-- Populate options dynamically --}}
+                                        @foreach ($parties as $party)
+                                            <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-responsive d-none mt-4" id="partyData">
                                 <table id="ordersTable" class="display expandable-table" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Party Name</th>
                                             <th>Total Weight</th>
+                                            <th>Total Wastage</th>
                                             <th>Total Out Weight</th>
                                             <th>Order Out Date</th>
                                             <th>Actions</th>
@@ -36,14 +48,21 @@
 @endsection
 @push('scripts')
     <script type="text/javascript">
+        let table = null;
         $(document).ready(function() {
-            $('#ordersTable').DataTable({
+            table = $('#ordersTable').DataTable({
                 'language': {
                     'searchPlaceholder': "Order ID"
                 },
                 "processing": true,
                 "serverSide": true,
-                "ajax": "{{ route('admin.getAllOrderOut') }}",
+                // "ajax": "{{ route('admin.getAllOrderOut') }}",
+                "ajax": {
+                    "url": "{{ route('admin.getAllOrderOut') }}",
+                    "data": function(d) {
+                        d.party_id = $('#partySelect').val()
+                    }
+                },
                 "pageLength": 5,
                 "columns": [
                     {
@@ -57,6 +76,10 @@
                     {
                         data: 'total_net_weight',
                         name: 'total_net_weight'
+                    },
+                    {
+                        data: 'total_wastage',
+                        name: 'total_wastage'
                     },
                     {
                         data: 'total_out_weight',
@@ -88,6 +111,16 @@
                     },
                 ]
             });
+        });
+        $('#partySelect').change(function() {
+            $('#partyData').removeClass('d-none');
+            table.draw();
+            // alert('retre');
+            var partyId = $(this).val(); // Get selected party ID
+
+            // if (partyId) {
+            //     fetchPartyData(partyId); // Fetch party data
+            // }
         });
 
         function deleteConfirmation(id) {

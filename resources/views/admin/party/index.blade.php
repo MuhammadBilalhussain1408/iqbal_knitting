@@ -8,11 +8,11 @@
                     <div class="card">
                         <div class="card-header text-start">
                             Parties/Customers
-                            @can('user-create')
+                            {{-- @can('user-create') --}}
                             <a href="{{ route('admin.party.create') }}" class="btn-datatable float-end">
                                 <button class="btn btn-primary btn-sm z">+Add Party</button>
                             </a>
-                            @endcan
+                            {{-- @endcan --}}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">

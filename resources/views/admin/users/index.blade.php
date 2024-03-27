@@ -63,10 +63,6 @@
                         name: 'role'
                     },
                     {
-                        data: 'password',
-                        name: 'password'
-                    },
-                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,

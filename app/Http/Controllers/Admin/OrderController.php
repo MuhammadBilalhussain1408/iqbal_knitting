@@ -37,6 +37,9 @@ class OrderController extends Controller
             ->addColumn('id', function ($row) {
                 return $row->id;
             })
+            ->addColumn('created_at', function ($row) {
+                return $row->created_at->format('Y-m-d');
+            })
             ->addColumn('party_name', function ($row) {
                 return $row->Party ? $row->Party->name : '';
             })

@@ -18,7 +18,7 @@ Copy code
                         <div class="card-body">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <select class="form-control" id="partySelect" onchange="fetchPartyData()">
+                                    <select class="form-control" id="partySelect">
                                         <option value="">Select Party</option>
                                         {{-- Populate options dynamically --}}
                                         @foreach ($parties as $party)
