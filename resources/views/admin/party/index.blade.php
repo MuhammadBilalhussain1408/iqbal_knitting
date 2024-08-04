@@ -8,11 +8,9 @@
                     <div class="card">
                         <div class="card-header text-start">
                             Parties/Customers
-                            {{-- @can('user-create') --}}
                             <a href="{{ route('admin.party.create') }}" class="btn-datatable float-end">
                                 <button class="btn btn-primary btn-sm z">+Add Party</button>
                             </a>
-                            {{-- @endcan --}}
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -21,11 +19,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
-                                            <th>Email</th>
                                             <th>Address</th>
                                             <th>Phone</th>
-                                            <th>Wastage</th>
-                                            <th>Wastage %age</th>
                                             <th style="width: 15%">Actions</th>
                                         </tr>
                                     </thead>
@@ -58,24 +53,12 @@
                         name: 'name'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
-                    },
-                    {
                         data: 'address',
                         name: 'address'
                     },
                     {
                         data: 'phone',
                         name: 'phone'
-                    },
-                    {
-                        data: 'wastage_status',
-                        name: 'wastage_status'
-                    },
-                    {
-                        data: 'wastage_percentage',
-                        name: 'wastage_percentage'
                     },
                     {
                         data: 'action',

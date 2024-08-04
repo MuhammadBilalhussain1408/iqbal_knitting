@@ -54,7 +54,6 @@ class PartyController extends Controller
         $request->validate([
             'name' => 'required',
             'phone' => 'required',
-            'email' => 'required',
             'address' => 'required'
         ]);
 
@@ -88,22 +87,11 @@ class PartyController extends Controller
         $request->validate([
             'name' => 'required',
             'phone' => 'required',
-            'email' => 'required',
             'address' => 'required'
         ]);
 
 
-        $party->update($request->except('_token', 'wastage_status', 'wastage_percentage'));
-
-
-        $party->wastage_status = $request->has('wastage_status');
-
-        if ($request->has('wastage_status')) {
-            $party->wastage_percentage = $request->input('wastage_percentage');
-        } else {
-
-            $party->wastage_percentage = null;
-        }
+        $party->update($request->except('_token'));
 
         $party->save();
 
