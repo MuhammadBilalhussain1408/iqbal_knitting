@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('phone')->nullable();
             $table->text('email')->nullable();
             $table->text('address')->nullable();
+            $table->double('remaining_weight',10,2)->nullable();
             $table->enum('status',['active','inactive'])->default('active')->nullable();
             $table->timestamps();
         });
