@@ -19,29 +19,6 @@
                         <input type="text" class="form-control" name="type"  />
                     </div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <label for="party" class="form-label">Party</label>
-                        {{-- <input type="text" class="form-control" name="party" required /> --}}
-                        <select name="party" id="party" class="form-control" >
-                            <option value="">Select party</option>
-                            @foreach ($parties as $party)
-                                <option value="{{ $party->id }}">{{ $party->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="net_weight" class="form-label d-flex justify-content-between">
-                            <span>Net Weight Per Box</span>
-                            <div>
-                                <b>Box has equal Weight ?</b>
-                                <input type="checkbox" name="is_equal_weight" onchange="isEqualWeight()"
-                                    id="is_equal_weight" />
-                            </div>
-                        </label>
-                        <input class="form-control" name="net_weight" id="net_weight" disabled />
-                    </div>
-                </div>
 
                 <div class="mb-3 mt-3">
                     <button type="submit" class="btn btn-primary float-end">Submit</button>

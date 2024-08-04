@@ -6,28 +6,30 @@ Copy code
         <div class="bg-light text-center rounded p-4">
             <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
-                    <div class="card">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="">Select Party</label>
+                            <select class="form-control" id="partySelect">
+                                <option value="">Select Party</option>
+                                {{-- Populate options dynamically --}}
+                                @foreach ($parties as $party)
+                                    <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card d-none" id="partyData">
                         <div class="card-header text-start">
                             Orders
                             {{-- @can('user-create') --}}
-                            <a href="{{ route('admin.order.create') }}" class="btn-datatable float-end">
+                            <a href="#" class="btn-datatable float-end" id="addOrderLink">
                                 <button class="btn btn-primary btn-sm z">+Add Order</button>
                             </a>
                             {{-- @endcan --}}
                         </div>
                         <div class="card-body">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <select class="form-control" id="partySelect">
-                                        <option value="">Select Party</option>
-                                        {{-- Populate options dynamically --}}
-                                        @foreach ($parties as $party)
-                                            <option value="{{ $party->id }}">{{ $party->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-12 mt-4 d-none" id="partyData"> {{-- Container to display party data --}}
+
+                            <div class="col-md-12 mt-4"> {{-- Container to display party data --}}
                                 <div class="table-responsive">
                                     <table id="ordersTable" class="display expandable-table" style="width:100%">
                                         <thead>
@@ -114,7 +116,7 @@ Copy code
             table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
-
+            $('#addOrderLink').attr('href', "{{ route('admin.order.create') }}" + '?party_id=' + partyId);
             // if (partyId) {
             //     fetchPartyData(partyId); // Fetch party data
             // }

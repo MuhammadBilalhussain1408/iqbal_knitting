@@ -40,15 +40,12 @@ class ThreadController extends Controller
         $request->validate([
             'name' => 'required',
             'type' => 'required',
-            
+
 
         ]);
         Thread::create([
             'name' => $request->name,
             'type' => $request->type,
-            'party_id' => $request->party,
-            'net_weight' => $request->net_weight,
-            'is_equal_weight' => ($request->is_equal_weight == 'on') ? '1' : '0'
         ]);
         return redirect(route('admin.thread.index'))->with('success', 'Thread saved successfully');
     }

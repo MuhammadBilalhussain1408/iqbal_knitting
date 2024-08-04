@@ -21,6 +21,7 @@
                                             <th>Name</th>
                                             <th>Address</th>
                                             <th>Phone</th>
+                                            <th>Remaining Weight</th>
                                             <th style="width: 15%">Actions</th>
                                         </tr>
                                     </thead>
@@ -59,6 +60,10 @@
                     {
                         data: 'phone',
                         name: 'phone'
+                    },
+                    {
+                        data: 'remaining_weight',
+                        name: 'remaining_weight'
                     },
                     {
                         data: 'action',

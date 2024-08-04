@@ -21,7 +21,6 @@
                                             <th>#</th>
                                             <th>Name</th>
                                             <th>Type</th>
-                                            <th>Party</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -60,17 +59,13 @@
                         name: 'type'
                     },
                     {
-                        data: 'party_id',
-                        name: 'party_id'
-                    },
-                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
                         searchable: false,
 
                     },
-                
+
                 ],
                 'columnDefs': [{
                         "targets": 0,

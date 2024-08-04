@@ -10,73 +10,62 @@
 
             <form method="POST" action="{{ route('admin.order.store') }}" id="OrderForm">
                 @csrf
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="party" class="form-label">Party</label>
-                        <select name="party" id="party" class="form-control" onchange="getParty()">
-                            <option value="">Select Party</option>
-                            @foreach ($parties as $party)
-                                <option value="{{ $party->id }}">{{ $party->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-8" id="partyDetails">
-                        <b>Party Details</b>
+                <div class="card">
+                    <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Name:
+                            <div class="col-md-12" id="partyDetails">
+                                <div class="row mb-2">
+                                    <div class="col-md-8">
+                                        <b>Party Details</b>
                                     </div>
-                                    <div class="col-md-6">
-                                        <span id="partyName"></span>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label for="order_date" class="form-label">Orde Date</label>
+                                            </div>
+
+                                            <div class="col-md-7">
+                                                <input type="date" name="order_date" id="order_date"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
+
                                 <div class="row">
                                     <div class="col-md-4">
-                                        Phone:
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <b>Name:</b>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ $orderParty->name }}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <span id="partyPhone"></span>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <b>Phone:</b>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ $orderParty->phone }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <b>Address:</b>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ $orderParty->address }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Address:
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span id="partyAddress"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        Email:
-                                    </div>
-                                    <div class="col-md-6">
-                                        <span id="partyEmail"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-md-4">
-                        <label for="order_date" class="form-label">Orde Date</label>
-                        <input type="date" name="order_date" id="order_date" class="form-control">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="estimated_delivery_date" class="form-label">Estimated Delivery Date</label>
-                        <input type="date" name="estimated_delivery_date" id="estimated_delivery_date"
-                            class="form-control">
                     </div>
                 </div>
                 <div class="row">
@@ -85,32 +74,43 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#.</th>
+                                    <th>Date</th>
+                                    <th>Page#</th>
                                     <th>Thread</th>
                                     <th>Boxes</th>
-                                    <th>Net Weight(kg)</th>
-                                    <th>Total Weight(kg)</th>
+                                    <th>Net (kg)</th>
+                                    <th>Total (kg)</th>
                                     <th scope="col" class="w-30px"></th>
                                 </tr>
                             </thead>
                             <tbody id="dynamicRow">
                                 <tr class="classabc" id="row0">
-                                    <td scope="row">1.</td>
-                                    <td>
-                                        <select id="thread0" class="form-control" onchange="getThread(0)">
-                                            <option value="">Select Thread</option>
-                                        </select>
+                                    <td>1.</td>
+                                    <td style="width:100px !important">
+                                        <input type="date" name="date0" id="date0" class="form-control" />
+                                    </td>
+                                    <td style="width:100px !important">
+                                        <input type="text" name="page_no0" id="page_no0" class="form-control" />
                                     </td>
                                     <td>
+                                        <select id="thread0" class="form-control">
+                                            <option value="">Select Thread</option>
+                                            @foreach ($threads as $thread)
+                                                <option value="{{ $thread->id }}">{{ $thread->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td style="width:100px !important">
                                         <input type="number" name="boxes0" id="boxes0" class="form-control"
                                             oninput="calculateTotalWeight(0)" min="0" />
                                     </td>
-                                    <td>
+                                    <td style="width:120px !important">
                                         <input type="text" name="net_weight0" id="net_weight0" class="form-control"
                                             min="0" readonly oninput="calculateTotalWeight(0)" />
                                     </td>
-                                    <td>
-                                        <input type="number" name="total_net_weight0" id="total_net_weight0" class="form-control"
-                                            readonly min="0" />
+                                    <td style="width:120px !important">
+                                        <input type="number" name="total_net_weight0" id="total_net_weight0"
+                                            class="form-control" readonly min="0" />
                                     </td>
                                     <td>
                                         <a onclick="addFunction()" class="">
@@ -159,69 +159,6 @@
 
 @push('scripts')
     <script>
-        function getThread(index) {
-            let id = $('#thread' + index).val();
-            console.log(index, id);
-            $.ajax({
-                type: "GET",
-                url: "{{ url('admin/thread-by-id/') }}" + '/' + id,
-                success: function(response) {
-                    let res = response.data;
-                    console.log(res);
-                    $('#net_weight' + index).val(res.net_weight);
-                    if (res.is_equal_weight == 0) {
-                        $('#net_weight' + index).attr('readonly', false);
-                    } else {
-                        $('#net_weight' + index).attr('readonly', true);
-                    }
-                }
-            });
-        }
-
-        function getParty() {
-            let id = $('#party option:selected').val();
-            if (id) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url('admin/party/') }}" + '/' + id,
-                    data: {},
-                    success: function(response) {
-                        let data = response.data;
-                        $("#partyDetails").removeClass('d-none');
-                        $("#partyName").text(data.name);
-                        $("#partyPhone").text(data.phone);
-                        $("#partyAddress").text(data.address);
-                        $("#partyEmail").text(data.email);
-                    }
-                });
-            } else {
-                $("#partyDetails").addClass('d-none');
-            }
-            getPartyThreads(0);
-        }
-
-        function getPartyThreads(index) {
-            let id = $('#party option:selected').val();
-            if (id) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ url('admin/party-threads/') }}" + '/' + id,
-                    data: {},
-                    success: function(response) {
-                        $('#thread' + index).html('');
-                        $('#thread' + index).append(`
-                            <option value="">Select Thread</option>
-                        `);
-                        response.data.forEach(i => {
-                            $('#thread' + index).append(`
-                                <option value="${i.id}">${i.name}</option>
-                            `);
-                        })
-                    }
-                });
-            }
-        }
-
         /* append product row on click */
         function addFunction(onclick) {
             var i = 0;
@@ -230,21 +167,27 @@
             $('#dynamicRow').append(`
                 <tr class="classabc" id="row${dataCount}">
                     <td>${parseInt($('#dynamicRow tr.classabc').length + 1)}</td>
-                    <td class="w-150px">
-                        <select id="thread${dataCount}" class="form-control" onchange="getThread(${dataCount})">
+                    <td style="width:100px !important">
+                        <input type="date" name="date${dataCount}" id="date${dataCount}" class="form-control" />
+                    </td>
+                    <td style="width:100px !important">
+                        <input type="text" name="page_no${dataCount}" id="page_no${dataCount}" class="form-control" />
+                    </td>
+                    <td>
+                        <select id="thread${dataCount}" class="form-control" >
                             <option value="">Select Thread</option>
                             @foreach ($threads as $thread)
                                 <option value="{{ $thread->id }}">{{ $thread->name }}</option>
                             @endforeach
                         </select>
                     </td>
-                    <td>
+                    <td style="width:100px !important">
                         <input type="number" name="boxes${dataCount}" id="boxes${dataCount}" class="form-control" min="0" oninput="calculateTotalWeight(${dataCount})" />
                     </td>
-                    <td>
+                    <td style="width:120px !important">
                         <input type="text" name="net_weight${dataCount}" id="net_weight${dataCount}" class="form-control" min="0" readonly oninput="calculateTotalWeight(${dataCount})" />
                     </td>
-                    <td>
+                    <td style="width:120px !important">
                         <input type="number" name="total_net_weight${dataCount}" id="total_net_weight${dataCount}" class="form-control" min="0" readonly />
                     </td>
                     <td>
@@ -254,8 +197,6 @@
                     </td>
                 </tr>
             `)
-            getPartyThreads(dataCount);
-
         }
 
         /* remove product row on click */

@@ -22,8 +22,8 @@ class OrderController extends Controller
     public function create()
     {
         $threads = Thread::all();
-        $parties = Party::all();
-        return view('admin.order.create', compact('threads', 'parties'));
+        $orderParty = Party::where('id',request('party_id'))->first();
+        return view('admin.order.create', compact('threads', 'orderParty'));
     }
     public function getAllOrder()
     {

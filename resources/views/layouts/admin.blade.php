@@ -67,6 +67,9 @@
         .col-md-8 {
             text-align: left !important;
         }
+        .col-md-12 {
+            text-align: left !important;
+        }
 
         .row {
             margin-left: auto !important;
