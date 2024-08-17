@@ -56,59 +56,38 @@ Copy code
     <script type="text/javascript">
         let table = null;
         $(document).ready(function() {
-            table = $('#ordersTable').DataTable({
-                'language': {
-                    'searchPlaceholder': "Order ID"
-                },
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
-                    "url": "{{ route('admin.getAllOrder') }}",
-                    "data": function(d) {
-                        d.party_id = $('#partySelect').val()
-                    }
-                },
+    table = $('#ordersTable').DataTable({
+        'language': {
+            'searchPlaceholder': "Order ID"
+        },
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "{{ route('admin.getAllOrder') }}",
+            "data": function(d) {
+                d.party_id = $('#partySelect').val();
+            },
+            "error": function(xhr, error, thrown) {
+                console.error('AJAX Error:', thrown);
+                console.log(xhr.responseText);
+            }
+        },
+        "pageLength": 5,
+        "columns": [
+            { data: 'id', name: 'id' },
+            { data: 'order_date', name: 'order_date' },
+            { data: 'party_name', name: 'party_name' },
+            { data: 'net_weight', name: 'net_weight' },
+            { data: 'boxes', name: 'boxes' },
+            { data: 'action', name: 'action', orderable: false, searchable: false },
+        ],
+        'columnDefs': [
+            { "targets": 0, "className": "text-start", "width": "4%" },
+            { "targets": 1, "className": "text-start" },
+        ]
+    });
+});
 
-                "pageLength": 5,
-                "columns": [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'order_date',
-                        name: 'order_date'
-                    },
-                    {
-                        data: 'party_name',
-                        name: 'party_name'
-                    },
-                    {
-                        data: 'net_weight',
-                        name: 'net_weight'
-                    },
-                    {
-                        data: 'boxes',
-                        name: 'boxes'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
-                ],
-                'columnDefs': [{
-                        "targets": 0, // your case first column
-                        "className": "text-start",
-                        "width": "4%"
-                    },
-                    {
-                        "targets": 1,
-                        "className": "text-start",
-                    },
-                ]
-            });
-        });
 
 
         $('#partySelect').change(function() {

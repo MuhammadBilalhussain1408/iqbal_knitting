@@ -9,6 +9,7 @@ use App\Models\Party;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -25,49 +26,92 @@ class OrderController extends Controller
         $orderParty = Party::where('id',request('party_id'))->first();
         return view('admin.order.create', compact('threads', 'orderParty'));
     }
+
     public function getAllOrder()
     {
         $party_id = request('party_id');
+        $query = Order::query()->with(['Party', 'orderItems']); 
+
         if ($party_id) {
-            $order = Order::query()->with(['Party'])->where('party_id', $party_id);
-        } else {
-            $order = [];
+            $query->where('party_id', $party_id);
         }
-        return DataTables::of($order)->addIndexColumn()
-            ->addColumn('id', function ($row) {
-                return $row->id;
-            })
-            ->addColumn('created_at', function ($row) {
-                return $row->created_at->format('Y-m-d');
+
+        $orders = $query->get(); 
+
+        return DataTables::of($orders)
+            ->addIndexColumn()
+            ->addColumn('order_date', function ($row) {
+                $firstOrderItem = $row->orderItems->first();
+                return $firstOrderItem && $firstOrderItem->thread_date ? $firstOrderItem->thread_date->format('Y-m-d') : 'N/A';
             })
             ->addColumn('party_name', function ($row) {
-                return $row->Party ? $row->Party->name : '';
+                return $row->Party ? $row->Party->name : 'N/A';
+            })
+            ->addColumn('net_weight', function ($row) {
+                return $row->net_weight;
+            })
+            ->addColumn('boxes', function ($row) {
+                return $row->boxes;
             })
             ->addColumn('action', function ($row) {
-                $btn = '<a href="' . route('admin.order.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
-                $btn = '<a href="' . route('admin.order.view', $row->id) . '" class="btn btn-primary btn-sm">View</a>';
-                // $btn = $btn . '<a  class="edit btn btn-danger btn-sm remove-user" data-id="' . $row->id . '" data-action="/' . $row->id . '"  onclick="deleteConfirmation(' . $row->id . ')">Del</a>';
-                return $btn;
+                // $editBtn = '<a href="' . route('admin.order.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
+                $viewBtn = '<a href="' . route('admin.order.view', $row->id) . '" class="btn btn-primary btn-sm">View</a>';
+                $deleteBtn = '<a href="#" class="btn btn-danger btn-sm" onclick="deleteConfirmation(' . $row->id . ')">Delete</a>';
+                return $viewBtn . ' ' . $deleteBtn;
             })
             ->rawColumns(['action'])
             ->make(true);
     }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'order_date' => 'required',
-            'net_weight' => 'required',
-            'boxes' => 'required',
-        ]);
-        $storeArr = $request->except(['_token', 'items']);
-        $storeArr['order_by'] = auth()->id();
-        $order = Order::create($storeArr);
-        foreach ($request->items as $item) {
-            $item['order_id'] = $order->id;
-            OrderItem::create($item);
+        try {
+            // Validate request data
+            $request->validate([
+                'order_date' => 'required|date',
+                'net_weight' => 'required|numeric',
+                'boxes' => 'required|integer',
+                'party_id' => 'required|integer',
+                'items' => 'required|array',
+                'items.*.thread_date' => 'nullable|date',
+                'items.*.page_no' => 'nullable|string',
+                'items.*.thread_id' => 'required|integer',
+                'items.*.num_of_boxes' => 'required|integer',
+                'items.*.net_weight' => 'required|numeric',
+                'items.*.total_net_weight' => 'required|numeric',
+            ]);
+    
+            // Extract data excluding _token and items
+            $storeArr = $request->except(['_token', 'items']);
+            
+            // Add the authenticated user's ID to the data
+            $storeArr['order_by'] = auth()->id();
+    
+            // Create the order with party_id included
+            $order = Order::create($storeArr);
+    
+            // Create order items
+            foreach ($request->items as $item) {
+                $item['order_id'] = $order->id;
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'thread_date' => $item['thread_date'] ?? null,
+                    'page_no' => $item['page_no'] ?? null,
+                    'thread_id' => $item['thread_id'],
+                    'num_of_boxes' => $item['num_of_boxes'],
+                    'net_weight' => $item['net_weight'],
+                    'total_net_weight' => $item['total_net_weight'],
+                ]);
+            }
+    
+            // Return a success response
+            return response()->json(['message' => 'Order created successfully']);
+        } catch (\Exception $e) {
+            \Log::error('Error creating order: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred'], 500);
         }
-        return response()->json(['message' => 'Order created successfully']);
     }
+    
     public function edit(Order $order)
     {
         dd($order);

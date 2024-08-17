@@ -13,4 +13,14 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Thread::class);
     }
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+    // OrderItem.php
+    public function getThreadDateAttribute()
+    {
+        return $this->attributes['thread_date'] ? \Carbon\Carbon::parse($this->attributes['thread_date']) : null;
+    }
+
 }

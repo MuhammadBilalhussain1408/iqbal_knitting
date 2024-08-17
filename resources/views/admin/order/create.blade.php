@@ -10,6 +10,8 @@
 
             <form method="POST" action="{{ route('admin.order.store') }}" id="OrderForm">
                 @csrf
+                <input type="hidden" name="party_id" id="party_id" value="{{ $orderParty->id }}">
+
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -87,7 +89,7 @@
                                 <tr class="classabc" id="row0">
                                     <td>1.</td>
                                     <td style="width:100px !important">
-                                        <input type="date" name="date0" id="date0" class="form-control" />
+                                        <input type="date" name="thread_date0" id="thread_date0" class="form-control" />
                                     </td>
                                     <td style="width:100px !important">
                                         <input type="text" name="page_no0" id="page_no0" class="form-control" />
@@ -106,11 +108,11 @@
                                     </td>
                                     <td style="width:120px !important">
                                         <input type="text" name="net_weight0" id="net_weight0" class="form-control"
-                                            min="0" readonly oninput="calculateTotalWeight(0)" />
+                                            min="0"  oninput="calculateTotalWeight(0)" />
                                     </td>
                                     <td style="width:120px !important">
                                         <input type="number" name="total_net_weight0" id="total_net_weight0"
-                                            class="form-control" readonly min="0" />
+                                            class="form-control"  min="0" />
                                     </td>
                                     <td>
                                         <a onclick="addFunction()" class="">
@@ -158,114 +160,110 @@
 @endsection
 
 @push('scripts')
-    <script>
-        /* append product row on click */
-        function addFunction(onclick) {
-            var i = 0;
-            ++i;
-            let dataCount = $('#dynamicRow tr.classabc').length;
-            $('#dynamicRow').append(`
-                <tr class="classabc" id="row${dataCount}">
-                    <td>${parseInt($('#dynamicRow tr.classabc').length + 1)}</td>
-                    <td style="width:100px !important">
-                        <input type="date" name="date${dataCount}" id="date${dataCount}" class="form-control" />
-                    </td>
-                    <td style="width:100px !important">
-                        <input type="text" name="page_no${dataCount}" id="page_no${dataCount}" class="form-control" />
-                    </td>
-                    <td>
-                        <select id="thread${dataCount}" class="form-control" >
-                            <option value="">Select Thread</option>
-                            @foreach ($threads as $thread)
-                                <option value="{{ $thread->id }}">{{ $thread->name }}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td style="width:100px !important">
-                        <input type="number" name="boxes${dataCount}" id="boxes${dataCount}" class="form-control" min="0" oninput="calculateTotalWeight(${dataCount})" />
-                    </td>
-                    <td style="width:120px !important">
-                        <input type="text" name="net_weight${dataCount}" id="net_weight${dataCount}" class="form-control" min="0" readonly oninput="calculateTotalWeight(${dataCount})" />
-                    </td>
-                    <td style="width:120px !important">
-                        <input type="number" name="total_net_weight${dataCount}" id="total_net_weight${dataCount}" class="form-control" min="0" readonly />
-                    </td>
-                    <td>
-                        <a onclick="removeRow($(this))">
-                            <i class="fa fa-minus"></i>
-                        </a>
-                    </td>
-                </tr>
-            `)
+<script>
+    /* append product row on click */
+    function addFunction(onclick) {
+        let dataCount = $('#dynamicRow tr.classabc').length;
+        $('#dynamicRow').append(`
+            <tr class="classabc" id="row${dataCount}">
+                <td>${parseInt($('#dynamicRow tr.classabc').length + 1)}</td>
+                <td style="width:100px !important">
+                    <input type="date" name="date${dataCount}" id="date${dataCount}" class="form-control" />
+                </td>
+                <td style="width:100px !important">
+                    <input type="text" name="page_no${dataCount}" id="page_no${dataCount}" class="form-control" />
+                </td>
+                <td>
+                    <select id="thread${dataCount}" class="form-control" >
+                        <option value="">Select Thread</option>
+                        @foreach ($threads as $thread)
+                            <option value="{{ $thread->id }}">{{ $thread->name }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td style="width:100px !important">
+                    <input type="number" name="boxes${dataCount}" id="boxes${dataCount}" class="form-control" min="0" oninput="calculateTotalWeight(${dataCount})" />
+                </td>
+                <td style="width:120px !important">
+                    <input type="text" name="net_weight${dataCount}" id="net_weight${dataCount}" class="form-control" min="0" oninput="calculateTotalWeight(${dataCount})" />
+                </td>
+                <td style="width:120px !important">
+                    <input type="number" name="total_net_weight${dataCount}" id="total_net_weight${dataCount}" class="form-control" min="0" />
+                </td>
+                <td>
+                    <a class="remove-row" href="#">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                </td>
+            </tr>
+        `)
+    }
+
+    /* Use event delegation for dynamic rows */
+    $(document).on('click', '.remove-row', function(e) {
+        e.preventDefault();
+        $(this).closest('tr').remove();
+    });
+
+    let orderForm = $('#OrderForm');
+    orderForm.submit(function(e) {
+    e.preventDefault();
+    let dataCount = $('#dynamicRow tr.classabc').length;
+    let items = [];
+
+    for (let i = 0; i < dataCount; i++) {
+        let obj = {
+            'thread_date': $('#thread_date' + i).val(),
+            'page_no': $('#page_no' + i).val(),
+            'thread_id': $('#thread' + i).val(),
+            'num_of_boxes': $('#boxes' + i).val(),
+            'net_weight': $('#net_weight' + i).val(),
+            'total_net_weight': $('#total_net_weight' + i).val(),
+        };
+        items.push(obj);
+    }
+
+    $.ajax({
+        url: "{{ route('admin.order.store') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            'party_id': $('#party_id').val(),
+            'order_date': $('#order_date').val(),
+            'net_weight': $('#totalNetWeight').text(),
+            'boxes': $('#totalBox').text(),
+            'items': items
+        },
+        success: function(result) {
+            Toast.fire('success', result.message, 'success');
+            window.location.href = "{{ route('admin.order.index') }}";
+        }
+    });
+});
+
+
+    function calculateTotalWeight(index) {
+        let netWeight = $('#net_weight' + index).val();
+        let boxes = $('#boxes' + index).val();
+        if (netWeight && boxes)
+            $('#total_net_weight' + index).val(netWeight * boxes);
+        calculateOrderDetail();
+    }
+
+    function calculateOrderDetail() {
+        let dataCount = $('#dynamicRow tr.classabc').length;
+        let totalBox = 0;
+        let totalNetWeight = 0;
+
+        for (let i = 0; i < dataCount; i++) {
+            if ($('#boxes' + i).val())
+                totalBox += parseInt($('#boxes' + i).val());
+            if ($('#total_net_weight' + i).val())
+                totalNetWeight += parseFloat($('#total_net_weight' + i).val());
         }
 
-        /* remove product row on click */
-        function removeRow(ele) {
-            let dataCount = $('#dynamicRow tr.classabc').length;
-            ele.closest('tr').remove();
-        }
-
-
-        let orderForm = $('#OrderForm');
-        orderForm.submit(function(e) {
-            e.preventDefault();
-            let dataCount = $('#dynamicRow tr.classabc').length;
-            let items = [];
-
-            for (let i = 0; i < dataCount; i++) {
-                let obj = {
-                    'thread_id': $('#thread' + i).val(),
-                    'num_of_boxes': $('#boxes' + i).val(),
-                    'net_weight': $('#net_weight' + i).val(),
-                    'total_net_weight': $('#total_net_weight' + i).val(),
-                };
-                items.push(obj);
-            }
-
-
-            $.ajax({
-                url: "{{ route('admin.order.store') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    'party_id': $('#party').val(),
-                    'order_date': $('#order_date').val(),
-                    'net_weight': $('#totalNetWeight').text(),
-                    'boxes': $('#totalBox').text(),
-                    'estimated_delivery_date': $('#estimated_delivery_date').val(),
-                    'items': items
-                },
-                success: function(result) {
-                    Toast.fire('success', result.message, 'success');
-                    window.location.href = "{{ route('admin.order.index') }}";
-                }
-            });
-        });
-
-        function calculateTotalWeight(index) {
-            let netWeight = $('#net_weight' + index).val();
-            let boxes = $('#boxes' + index).val();
-            console.log(netWeight, boxes);
-            if (netWeight && boxes)
-                $('#total_net_weight' + index).val(netWeight * boxes);
-            calculateOrderDetail();
-        }
-
-        function calculateOrderDetail() {
-            let dataCount = $('#dynamicRow tr.classabc').length;
-            let totalBox = 0;
-            let totalNetWeight = 0;
-
-            for (let i = 0; i < dataCount; i++) {
-                if ($('#boxes' + i).val())
-                    totalBox += parseInt($('#boxes' + i).val());
-                if ($('#total_net_weight' + i).val())
-                    totalNetWeight += parseFloat($('#total_net_weight' + i).val());
-            }
-
-            console.log(totalBox, totalNetWeight);
-            $('#totalBox').text(totalBox);
-            $('#totalNetWeight').text(totalNetWeight);
-        }
-    </script>
+        $('#totalBox').text(totalBox);
+        $('#totalNetWeight').text(totalNetWeight);
+    }
+</script>
 @endpush
