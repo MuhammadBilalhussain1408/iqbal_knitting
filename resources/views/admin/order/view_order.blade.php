@@ -44,20 +44,10 @@
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <b>Total Weight:</b>
+                                            <b>Remaining Weight:</b>
                                         </div>
                                         <div class="col-md-6">
-                                            {{ $order->total_weight }} KG
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <b>Total Boxes:</b>
-                                        </div>
-                                        <div class="col-md-6">
-                                            {{ $order->total_boxes }}
+                                            {{ $order->Party?->remaining_weight }} KG
                                         </div>
                                     </div>
                                 </div>

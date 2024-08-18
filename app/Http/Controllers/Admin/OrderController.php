@@ -23,20 +23,20 @@ class OrderController extends Controller
     public function create()
     {
         $threads = Thread::all();
-        $orderParty = Party::where('id',request('party_id'))->first();
+        $orderParty = Party::where('id', request('party_id'))->first();
         return view('admin.order.create', compact('threads', 'orderParty'));
     }
 
     public function getAllOrder()
     {
         $party_id = request('party_id');
-        $query = Order::query()->with(['Party', 'orderItems']); 
+        $query = Order::query()->with(['Party', 'orderItems']);
 
         if ($party_id) {
             $query->where('party_id', $party_id);
         }
 
-        $orders = $query->get(); 
+        $orders = $query->get();
 
         return DataTables::of($orders)
             ->addIndexColumn()
@@ -80,16 +80,17 @@ class OrderController extends Controller
                 'items.*.net_weight' => 'required|numeric',
                 'items.*.total_net_weight' => 'required|numeric',
             ]);
-    
+
             // Extract data excluding _token and items
             $storeArr = $request->except(['_token', 'items']);
-            
+
             // Add the authenticated user's ID to the data
             $storeArr['order_by'] = auth()->id();
-    
+
             // Create the order with party_id included
             $order = Order::create($storeArr);
-    
+
+            $remaining_weight = 0;
             // Create order items
             foreach ($request->items as $item) {
                 $item['order_id'] = $order->id;
@@ -102,8 +103,18 @@ class OrderController extends Controller
                     'net_weight' => $item['net_weight'],
                     'total_net_weight' => $item['total_net_weight'],
                 ]);
+                $remaining_weight += $item['total_net_weight'];
             }
-    
+
+            $party = Party::where('id', $order->party_id)->first();
+            if ($party) {
+                if ($party->remaining_weight) {
+                    $remaining_weight = $remaining_weight + $party->remaining_weight;
+                }
+                $party->update([
+                    'remaining_weight' => $remaining_weight
+                ]);
+            }
             // Return a success response
             return response()->json(['message' => 'Order created successfully']);
         } catch (\Exception $e) {
@@ -111,14 +122,12 @@ class OrderController extends Controller
             return response()->json(['message' => 'An error occurred'], 500);
         }
     }
-    
+
     public function edit(Order $order)
     {
         dd($order);
     }
-    public function show()
-    {
-    }
+    public function show() {}
     public function update(Request $request, $id)
     {
 
@@ -128,9 +137,7 @@ class OrderController extends Controller
             'boxes' => 'required',
         ]);
     }
-    public function destory(Request $request)
-    {
-    }
+    public function destory(Request $request) {}
     public function viewOrder($id)
     {
         $order = Order::with(['OrderItems.Thread', 'Party'])->where('id', $id)->first();
