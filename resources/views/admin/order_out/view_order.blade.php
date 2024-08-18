@@ -18,7 +18,7 @@
                                             <b>Party Name:</b>
                                         </div>
                                         <div class="col-md-6">
-                                            {{ $order->Party?->name }}
+                                            {{ $order->party?->name ?? 'N/A' }}
                                         </div>
                                     </div>
                                 </div>
@@ -28,7 +28,7 @@
                                             <b>Party Phone:</b>
                                         </div>
                                         <div class="col-md-6">
-                                            {{ $order->Party?->phone }}
+                                            {{ $order->party?->phone ?? 'N/A' }}
                                         </div>
                                     </div>
                                 </div>
@@ -48,41 +48,38 @@
                                             <b>Total Weight:</b>
                                         </div>
                                         <div class="col-md-6">
-                                            {{ $order->total_weight }} KG
+                                            {{ $totalWeight }} KG
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <b>Total Boxes:</b>
+                                            <b>Total Rolls:</b>
                                         </div>
                                         <div class="col-md-6">
-                                            {{ $order->total_boxes }}
+                                            {{ $totalRolls }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="table-responsive mt-5">
-                                {{-- <b>Thread Details</b> --}}
                                 <table id="ordersTable" class="display expandable-table table table-bordered"
                                     style="width:100%">
                                     <thead>
                                         <tr class="text-start">
-                                            <th colspan="5">Thread Details</th>
+                                            <th colspan="5">Quality Details</th>
                                         </tr>
                                         <tr>
                                             <th>#</th>
-                                            <th>Thread Type</th>
-                                            <th>Net Weight</th>
+                                            <th>Quality Type</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($order->OrderItems as $index => $item)
+                                        @foreach ($order->orderItems as $index => $item)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ $item->Thread?->name }}</td>
-                                                <td>{{ $item->weight }}</td>
+                                                <td>{{ $item->quality?->name ?? 'N/A' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -95,6 +92,7 @@
         </div>
     </div>
 @endsection
+
 @push('scripts')
     <script type="text/javascript"></script>
 @endpush

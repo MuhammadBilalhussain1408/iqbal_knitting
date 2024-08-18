@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\OrderOutController;
 use App\Http\Controllers\Admin\PartyController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ThreadController;
+use App\Http\Controllers\Admin\QualityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,7 @@ Route::group(['prefix' => 'admin'], function () {
         //Roles
         Route::resource('role', RoleController::class);
         Route::resource('permissions', PermissionController::class);
+        Route::resource('quality', QualityController::class);
         Route::resource('thread', ThreadController::class);
         Route::resource('party', PartyController::class);
         Route::resource('order', OrderController::class);
@@ -77,5 +79,10 @@ Route::group(['prefix' => 'admin'], function () {
         // Route::get('get-party-data/{id}', [OrderController::class, 'getPartyData'])->name('getPartyData');
         Route::get('thread-all', [ThreadController::class, 'getAllThreads'])->name('getAllThreads');
         Route::get('thread-by-id/{id}', [ThreadController::class, 'getThreadById'])->name('getThreadById');
+
+        //quality routes
+        Route::get('quality-all', [QualityController::class, 'getAllqualities'])->name('getAllqualities');
+        Route::get('quality-by-id/{id}', [QualityController::class, 'getQualityById'])->name('getQualityById');
+
     });
 });

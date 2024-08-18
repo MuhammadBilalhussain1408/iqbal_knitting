@@ -41,6 +41,10 @@
                 class="nav-item nav-link my-1 {{ Request::is('admin/thread*') ? 'active' : '' }}">
                 <i class="fa fa-keyboard me-1"></i>Thread
             </a>
+            <a href="{{ route('admin.quality.index') }}"
+                class="nav-item nav-link my-1 {{ Request::is('admin/quality*') ? 'active' : '' }}">
+                <i class="fa fa-keyboard me-1"></i>Quality
+            </a>
             <a href="{{ route('admin.party.index') }}"
                 class="nav-item nav-link my-1 {{ Request::is('admin/party*') ? 'active' : '' }}">
                 <i class="fa fa-th me-1"></i>Party

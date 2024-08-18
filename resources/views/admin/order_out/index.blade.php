@@ -1,43 +1,49 @@
 @extends('layouts.admin')
 
+Copy code
 @section('content')
     <div class="container-fluid pt-4 px-4">
         <div class="bg-light text-center rounded p-4">
             <div class="row">
                 <div class="col-md-12 grid-margin stretch-card">
-                    <div class="card">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="">Select Party</label>
+                            <select class="form-control" id="partySelect">
+                                <option value="">Select Party</option>
+                                {{-- Populate options dynamically --}}
+                                @foreach ($parties as $party)
+                                    <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card d-none" id="partyData">
                         <div class="card-header text-start">
-                            Orders
-                            <a href="{{ route('admin.order_out.create') }}" class="btn-datatable float-end">
-                                <button class="btn btn-primary btn-sm z">+Add Order</button>
+                            Orders Out
+                            {{-- @can('user-create') --}}
+                            <a href="#" class="btn-datatable float-end" id="addOrderLink">
+                                <button class="btn btn-primary btn-sm z">+Add Order Out</button>
                             </a>
+                            {{-- @endcan --}}
                         </div>
                         <div class="card-body">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <select class="form-control" id="partySelect">
-                                        <option value="">Select Party</option>
-                                        {{-- Populate options dynamically --}}
-                                        @foreach ($parties as $party)
-                                            <option value="{{ $party->id }}">{{ $party->name }}</option>
-                                        @endforeach
-                                    </select>
+
+                            <div class="col-md-12 mt-4"> {{-- Container to display party data --}}
+                                <div class="table-responsive">
+                                    <table id="ordersTable" class="display expandable-table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Order Out Date</th>
+                                                <th>Party Name</th>
+                                                <th>Total Weight</th>
+                                                <th>Total Rolls</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
-                            </div>
-                            <div class="table-responsive d-none mt-4" id="partyData">
-                                <table id="ordersTable" class="display expandable-table" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Party Name</th>
-                                            <th>Total Weight</th>
-                                            <th>Total Wastage</th>
-                                            <th>Total Out Weight</th>
-                                            <th>Order Out Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -56,71 +62,40 @@
                 },
                 "processing": true,
                 "serverSide": true,
-                // "ajax": "{{ route('admin.getAllOrderOut') }}",
                 "ajax": {
                     "url": "{{ route('admin.getAllOrderOut') }}",
                     "data": function(d) {
-                        d.party_id = $('#partySelect').val()
+                        d.party_id = $('#partySelect').val();
+                    },
+                    "error": function(xhr, error, thrown) {
+                        console.error('AJAX Error:', thrown);
+                        console.log(xhr.responseText);
                     }
                 },
                 "pageLength": 5,
                 "columns": [
-                    {
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'party_name',
-                        name: 'party_name'
-                    },
-                    {
-                        data: 'total_net_weight',
-                        name: 'total_net_weight'
-                    },
-                    {
-                        data: 'total_wastage',
-                        name: 'total_wastage'
-                    },
-                    {
-                        data: 'total_out_weight',
-                        name: 'total_out_weight'
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
+                    { data: 'id', name: 'id' },
+                    { data: 'order_date', name: 'order_date' },
+                    { data: 'party_name', name: 'party_name' },
+                    { data: 'total_weight', name: 'total_weight' },
+                    { data: 'num_of_rolls', name: 'num_of_rolls' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
-                'columnDefs': [{
-                        "targets": 0, // your case first column
-                        "className": "text-start",
-                        "width": "4%"
-                    },
-                    {
-                        "targets": 1,
-                        "className": "text-start",
-                    },
-                    {
-                        "targets": 2,
-                        "className": "text-start",
-                    },
+                'columnDefs': [
+                    { "targets": 0, "className": "text-start", "width": "4%" },
+                    { "targets": 1, "className": "text-start" },
                 ]
             });
         });
+
+
+
         $('#partySelect').change(function() {
             $('#partyData').removeClass('d-none');
             table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
-
-            // if (partyId) {
-            //     fetchPartyData(partyId); // Fetch party data
-            // }
+            $('#addOrderLink').attr('href', "{{ route('admin.order_out.create') }}" + '?party_id=' + partyId);
         });
 
         function deleteConfirmation(id) {
