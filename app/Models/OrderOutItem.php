@@ -10,13 +10,8 @@ class OrderOutItem extends Model
     use HasFactory;
 
     // Define fillable attributes
-    protected $fillable = [
-        'order_out_id',
-        'quality_date',
-        'page_no',
-        'quality_id',
-        'num_of_rolls',
-        'total_weight',
+    protected $guarded = [
+
     ];
     public function Thread()
     {

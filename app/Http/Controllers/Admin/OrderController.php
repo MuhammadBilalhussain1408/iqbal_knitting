@@ -53,6 +53,12 @@ class OrderController extends Controller
             ->addColumn('boxes', function ($row) {
                 return $row->boxes;
             })
+            ->addColumn('page_no', function ($row) {
+                return count($row->OrderItems)>0 ? $row->OrderItems[0]['page_no'] : 'N/A';
+            })
+            ->addColumn('created_at', function($row){
+                return $row->created_at->format('Y-m-d');
+            })
             ->addColumn('action', function ($row) {
                 // $editBtn = '<a href="' . route('admin.order.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
                 $viewBtn = '<a href="' . route('admin.order.view', $row->id) . '" class="btn btn-primary btn-sm">View</a>';
@@ -65,10 +71,10 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        try {
+        // try {
             // Validate request data
             $request->validate([
-                'order_date' => 'required|date',
+                // 'order_date' => 'required|date',
                 'net_weight' => 'required|numeric',
                 'boxes' => 'required|integer',
                 'party_id' => 'required|integer',
@@ -86,13 +92,13 @@ class OrderController extends Controller
 
             // Add the authenticated user's ID to the data
             $storeArr['order_by'] = auth()->id();
-
-            // Create the order with party_id included
-            $order = Order::create($storeArr);
-
-            $remaining_weight = 0;
-            // Create order items
             foreach ($request->items as $item) {
+                // Create the order with party_id included
+                $order = Order::create($storeArr);
+
+                $remaining_weight = 0;
+                // Create order items
+
                 $item['order_id'] = $order->id;
                 OrderItem::create([
                     'order_id' => $order->id,
@@ -117,10 +123,10 @@ class OrderController extends Controller
             }
             // Return a success response
             return response()->json(['message' => 'Order created successfully']);
-        } catch (\Exception $e) {
-            \Log::error('Error creating order: ' . $e->getMessage());
-            return response()->json(['message' => 'An error occurred'], 500);
-        }
+        // } catch (\Exception $e) {
+        //     \Log::error('Error creating order: ' . $e->getMessage());
+        //     return response()->json(['message' => 'An error occurred'], 500);
+        // }
     }
 
     public function edit(Order $order)

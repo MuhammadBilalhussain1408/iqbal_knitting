@@ -35,115 +35,119 @@ class OrderOutController extends Controller
         $threads = Thread::all();
         $qualities = Quality::all();
         $orderParty = Party::where('id', request('party_id'))->first();
-        return view('admin.order_out.create', compact('threads', 'orderParty','qualities'));
+        return view('admin.order_out.create', compact('threads', 'orderParty', 'qualities'));
     }
 
     public function getAllOrderOut()
-{
-    $party_id = request('party_id');
+    {
+        $party_id = request('party_id');
 
-    $query = OrderOutItem::query()->with(['orderOut']);
+        $query = OrderOutItem::query()->with(['orderOut']);
 
-    if ($party_id) {
-        $query->whereHas('orderOut', function ($query) use ($party_id) {
-            $query->where('party_id', $party_id);
-        });
+        if ($party_id) {
+            $query->whereHas('orderOut', function ($query) use ($party_id) {
+                $query->where('party_id', $party_id);
+            });
+        }
+
+        $orders = $query->get();
+
+        return DataTables::of($orders)
+            ->addIndexColumn()
+            ->addColumn('order_date', function ($row) {
+                return $row->created_at->format('Y-m-d');
+            })
+            ->addColumn('party_name', function ($row) {
+                return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->name : 'N/A';
+            })
+            ->addColumn('total_weight', function ($row) {
+                return $row->total_weight;
+            })
+            ->addColumn('num_of_rolls', function ($row) {
+                return $row->num_of_rolls;
+            })
+            ->addColumn('action', function ($row) {
+                $viewBtn = '<a href="' . route('admin.orderOut.view', $row->order_out_id) . '" class="btn btn-primary btn-sm">View</a>';
+                $deleteBtn = '<a href="#" class="btn btn-danger btn-sm" onclick="deleteConfirmation(' . $row->order_out_id . ')">Delete</a>';
+                return $viewBtn . ' ' . $deleteBtn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
-    $orders = $query->get();
 
-    return DataTables::of($orders)
-        ->addIndexColumn()
-        ->addColumn('order_date', function ($row) {
-            return $row->orderOut ? $row->orderOut->order_date : 'N/A';
-        })
-        ->addColumn('party_name', function ($row) {
-            return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->name : 'N/A';
-        })
-        ->addColumn('total_weight', function ($row) {
-            return $row->total_weight;
-        })
-        ->addColumn('num_of_rolls', function ($row) {
-            return $row->num_of_rolls;
-        })
-        ->addColumn('action', function ($row) {
-            $viewBtn = '<a href="' . route('admin.orderOut.view', $row->order_out_id) . '" class="btn btn-primary btn-sm">View</a>';
-            $deleteBtn = '<a href="#" class="btn btn-danger btn-sm" onclick="deleteConfirmation(' . $row->order_out_id . ')">Delete</a>';
-            return $viewBtn . ' ' . $deleteBtn;
-        })
-        ->rawColumns(['action'])
-        ->make(true);
-}
-
-    
     /**
      * Store a newly created resource in storage.
      */
-    
-     public function store(Request $request)
-     {
-         try {
-             // Log the incoming request data
-             \Log::info('Request Data:', $request->all());
-     
-             // Validate request data
-             $request->validate([
-                 'order_date' => 'required|date',
-                 'party_id' => 'required|integer',
-                 'items' => 'required|array',
-                 'items.*.quality_date' => 'nullable|date',
-                 'items.*.page_no' => 'nullable|string',
-                 'items.*.quality_id' => 'required|integer',
-                 'items.*.num_of_rolls' => 'required|integer', // Ensure it's an integer
-                 'items.*.total_weight' => 'required|numeric',
-             ]);
-     
-             // Extract data excluding _token and items
-             $storeArr = $request->except(['_token', 'items']);
-     
-             // Add the authenticated user's ID to the data
-             $storeArr['order_by'] = auth()->id();
-     
-             // Create the order with party_id included
-             $order = OrderOut::create($storeArr);
-     
-             $remaining_weight = 0;
-     
-             // Create order items
-             foreach ($request->items as $item) {
-                 $item['order_id'] = $order->id;
-                 OrderOutItem::create([
-                     'order_out_id' => $order->id,
-                     'quality_date' => $item['quality_date'] ?? null,
-                     'page_no' => $item['page_no'] ?? null,
-                     'quality_id' => $item['quality_id'],
-                     'num_of_rolls' => $item['num_of_rolls'],
-                     'total_weight' => $item['total_weight'],
-                 ]);
-                 $remaining_weight += $item['total_weight'];
-             }
-     
-             $party = Party::where('id', $order->party_id)->first();
-             if ($party) {
-                 if ($party->remaining_weight) {
-                     $remaining_weight = $remaining_weight - $party->remaining_weight;
-                 }
-                 $party->update([
-                     'remaining_weight' => $remaining_weight
-                 ]);
-             }
-     
-             // Return a success response
-             return response()->json(['success' => true]);
-     
-         } catch (\Exception $e) {
-             \Log::error('Error creating order Out: ' . $e->getMessage());
-             return response()->json(['message' => 'An error occurred'], 500);
-         }
-     }
-     
 
-     
+    public function store(Request $request)
+    {
+        //  try {
+        //      // Log the incoming request data
+        //      \Log::info('Request Data:', $request->all());
+
+        // Validate request data
+        $request->validate([
+            // 'order_date' => 'required|date',
+            'party_id' => 'required|integer',
+            'items' => 'required|array',
+            'items.*.quality_date' => 'nullable|date',
+            'items.*.page_no' => 'nullable|string',
+            'items.*.quality_id' => 'required|integer',
+            'items.*.num_of_rolls' => 'required|integer', // Ensure it's an integer
+            'items.*.total_weight' => 'required|numeric',
+        ]);
+
+        // Extract data excluding _token and items
+        $storeArr = $request->except(['_token', 'items']);
+
+        // Add the authenticated user's ID to the data
+        $storeArr['order_by'] = auth()->id();
+        // Create order items
+        foreach ($request->items as $item) {
+
+            // Create the order with party_id included
+            $order = OrderOut::create($storeArr);
+
+            $remaining_weight = 0;
+
+
+            $item['order_id'] = $order->id;
+            $oldMaxTotalWeight = OrderOutItem::where('party_id', $order->party_id)->max('total_weight');
+            OrderOutItem::create([
+                'party_id' => $order->party_id,
+                'order_out_id' => $order->id,
+                'quality_date' => $item['quality_date'] ?? null,
+                'page_no' => $item['page_no'] ?? null,
+                'quality_id' => $item['quality_id'],
+                'num_of_rolls' => $item['num_of_rolls'],
+                'weight' => $item['total_weight'],
+                'total_weight' => $oldMaxTotalWeight ? $oldMaxTotalWeight + $item['total_weight'] : $item['total_weight']
+            ]);
+            $remaining_weight += $item['total_weight'];
+        }
+
+        $party = Party::where('id', $order->party_id)->first();
+        if ($party) {
+            if ($party->remaining_weight) {
+                $remaining_weight = $remaining_weight - $party->remaining_weight;
+            }
+            $party->update([
+                'remaining_weight' => $remaining_weight
+            ]);
+        }
+
+        // Return a success response
+        return response()->json(['success' => true]);
+
+        //  } catch (\Exception $e) {
+        //      \Log::error('Error creating order Out: ' . $e->getMessage());
+        //      return response()->json(['message' => 'An error occurred'], 500);
+        //  }
+    }
+
+
+
 
     public function changeOrderStatus($orderId)
     {
@@ -213,21 +217,19 @@ class OrderOutController extends Controller
         return $pdf->download();
     }
     public function viewOrderOut($id)
-{
-    // Fetch the order with related OrderOutItems and Party
-    $order = OrderOut::with(['orderItems.quality', 'party'])->where('id', $id)->first();
+    {
+        // Fetch the order with related OrderOutItems and Party
+        $order = OrderOut::with(['orderItems.quality', 'party'])->where('id', $id)->first();
 
-    if (!$order) {
-        return abort(404, 'Order not found');
+        if (!$order) {
+            return abort(404, 'Order not found');
+        }
+
+        // Calculate the total number of rolls and total weight
+        $totalRolls = $order->orderItems->sum('num_of_rolls');
+        $totalWeight = $order->orderItems->sum('total_weight');
+
+        // Pass data to the view
+        return view('admin.order_out.view_order', compact('order', 'totalRolls', 'totalWeight'));
     }
-
-    // Calculate the total number of rolls and total weight
-    $totalRolls = $order->orderItems->sum('num_of_rolls');
-    $totalWeight = $order->orderItems->sum('total_weight');
-
-    // Pass data to the view
-    return view('admin.order_out.view_order', compact('order', 'totalRolls', 'totalWeight'));
-}
-
-
 }

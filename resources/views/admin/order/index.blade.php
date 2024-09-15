@@ -36,6 +36,7 @@ Copy code
                                             <tr>
                                                 <th>#</th>
                                                 <th>Order Date</th>
+                                                <th>Page No</th>
                                                 <th>Party Name</th>
                                                 <th>Total Weight</th>
                                                 <th>Total Boxes</th>
@@ -75,7 +76,8 @@ Copy code
         "pageLength": 5,
         "columns": [
             { data: 'id', name: 'id' },
-            { data: 'order_date', name: 'order_date' },
+            { data: 'created_at', name: 'created_at' },
+            { data: 'page_no', name: 'page_no' },
             { data: 'party_name', name: 'party_name' },
             { data: 'net_weight', name: 'net_weight' },
             { data: 'boxes', name: 'boxes' },

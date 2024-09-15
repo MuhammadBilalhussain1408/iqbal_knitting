@@ -35,10 +35,11 @@ Copy code
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Order Out Date</th>
+                                                <th>Order Date</th>
                                                 <th>Party Name</th>
-                                                <th>Total Weight</th>
                                                 <th>Total Rolls</th>
+                                                <th>Weight</th>
+                                                <th>Total Weight</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -77,8 +78,9 @@ Copy code
                     { data: 'id', name: 'id' },
                     { data: 'order_date', name: 'order_date' },
                     { data: 'party_name', name: 'party_name' },
-                    { data: 'total_weight', name: 'total_weight' },
                     { data: 'num_of_rolls', name: 'num_of_rolls' },
+                    { data: 'weight', name: 'weight' },
+                    { data: 'total_weight', name: 'total_weight' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
                 'columnDefs': [

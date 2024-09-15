@@ -21,14 +21,14 @@
                                         <b>Party Details</b>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="row">
+                                        {{-- <div class="row">
                                             <div class="col-md-4">
                                                 <label for="order_date" class="form-label">Order Date</label>
                                             </div>
                                             <div class="col-md-7">
                                                 <input type="date" name="order_date" id="order_date" class="form-control">
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
 
