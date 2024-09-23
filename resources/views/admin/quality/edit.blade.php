@@ -17,10 +17,10 @@
                             <input type="text" class="form-control" name="name" value="{{$quality->name}}" >
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        {{-- <div class="col-md-6 mb-3">
                             <label for="type" class="form-label">Type</label>
                             <input type="type" class="form-control" name="type" value="{{$quality->type}}" >
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="mb-3">

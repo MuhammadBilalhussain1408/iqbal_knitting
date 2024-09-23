@@ -88,7 +88,7 @@ class ThreadController extends Controller
     public function destroy(Thread $thread)
     {
         $thread->delete();
-        return redirect(route('admin.thread.index'))->with('success', 'Thread deleted successfully');
+        return response()->json(['success'=>'Thread deleted successfully']);
     }
 
     function getAllThreads()

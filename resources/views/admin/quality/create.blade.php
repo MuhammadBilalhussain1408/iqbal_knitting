@@ -14,10 +14,10 @@
                         <label for="name" class="form-label">Name</label>
                         <input type="text" class="form-control" name="name"  />
                     </div>
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <label for="type" class="form-label">Type</label>
                         <input type="text" class="form-control" name="type"  />
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="mb-3 mt-3">

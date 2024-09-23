@@ -37,7 +37,7 @@ class QualityController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'type' => 'required',
+            // 'type' => 'required',
 
 
         ]);
@@ -70,7 +70,7 @@ class QualityController extends Controller
 {
     $request->validate([
         'name' => 'required',
-        'type' => 'required'
+        // 'type' => 'required'
     ]);
 
     $quality->update($request->except('_token'));
@@ -84,7 +84,7 @@ class QualityController extends Controller
     public function destroy(Quality $quality)
     {
         $quality->delete();
-        return redirect(route('admin.quality.index'))->with('success', 'Quality deleted successfully');
+        return response()->json(['success'=>'Quality deleted successfully']);
     }
 
     function getAllqualities()

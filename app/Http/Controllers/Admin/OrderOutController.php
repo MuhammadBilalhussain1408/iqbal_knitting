@@ -42,7 +42,7 @@ class OrderOutController extends Controller
     {
         $party_id = request('party_id');
 
-        $query = OrderOutItem::query()->with(['orderOut']);
+        $query = OrderOutItem::query()->with(['orderOut','party']);
 
         if ($party_id) {
             $query->whereHas('orderOut', function ($query) use ($party_id) {
@@ -55,7 +55,13 @@ class OrderOutController extends Controller
         return DataTables::of($orders)
             ->addIndexColumn()
             ->addColumn('order_date', function ($row) {
-                return $row->created_at->format('Y-m-d');
+                return $row->created_at->format('d-m-Y');
+            })
+            ->addColumn('party_name', function ($row) {
+                return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->name : 'N/A';
+            })
+            ->addColumn('remaining_weight', function ($row) {
+                return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->remaining_weight : 'N/A';
             })
             ->addColumn('party_name', function ($row) {
                 return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->name : 'N/A';
@@ -199,9 +205,9 @@ class OrderOutController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+    public function destroy($order) {
+        OrderOut::where('id',$order)->delete();
+        return response()->json(['success'=>'Order out deleted successfully']);
     }
 
     public function orderDetail($id)

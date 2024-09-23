@@ -146,12 +146,13 @@ Copy code
                     });
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('admin/party/') }}" + '/' + id,
+                        url: "{{ url('admin/order/') }}" + '/' + id,
                         data: {
                             _token: "{{ csrf_token() }}"
                         },
                         // dataType: ' JSON',
                         success: function(response) {
+                            swal.fire("success", response.success, "success");
                             location.reload();
                         }
                     });

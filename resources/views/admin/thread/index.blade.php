@@ -117,7 +117,8 @@
                         },
                         dataType: 'JSON',
                         success: function(response) {
-                            location.reload();
+                            swal.fire("success", response.success, "success");
+                            location.reload(); 
                         }
                     });
                 } else {

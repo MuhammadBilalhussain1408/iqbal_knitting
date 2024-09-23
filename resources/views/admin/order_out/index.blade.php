@@ -40,6 +40,7 @@ Copy code
                                                 <th>Total Rolls</th>
                                                 <th>Weight</th>
                                                 <th>Total Weight</th>
+                                                <th>Remaining Weight</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -81,6 +82,7 @@ Copy code
                     { data: 'num_of_rolls', name: 'num_of_rolls' },
                     { data: 'weight', name: 'weight' },
                     { data: 'total_weight', name: 'total_weight' },
+                    { data: 'remaining_weight', name: 'remaining_weight' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
                 'columnDefs': [
@@ -122,12 +124,13 @@ Copy code
                     });
                     $.ajax({
                         type: "DELETE",
-                        url: "{{ url('admin/party/') }}" + '/' + id,
+                        url: "{{ url('admin/order_out/') }}" + '/' + id,
                         data: {
                             _token: "{{ csrf_token() }}"
                         },
                         // dataType: ' JSON',
                         success: function(response) {
+                            swal.fire("success", response.success, "success");
                             location.reload();
                         }
                     });

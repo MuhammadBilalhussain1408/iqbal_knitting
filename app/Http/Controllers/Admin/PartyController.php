@@ -104,7 +104,7 @@ class PartyController extends Controller
     public function destroy(Party $party)
     {
         $party->delete();
-        return redirect(route('admin.party.index'))->with('success', 'Party deleted successfully');
+        return response()->json(['success'=>'Party deleted successfully']);
     }
 
     public function getPartyThreads($id)

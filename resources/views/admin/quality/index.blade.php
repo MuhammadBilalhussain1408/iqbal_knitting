@@ -20,7 +20,6 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
-                                            <th>Type</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -55,10 +54,6 @@
                         name: 'name'
                     },
                     {
-                        data: 'type',
-                        name: 'type'
-                    },
-                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
@@ -78,10 +73,6 @@
                     },
                     {
                         "targets": 2,
-                        "className": "text-start",
-                    },
-                    {
-                        "targets": 3,
                         "className": "text-start",
                     }
                 ]
@@ -117,6 +108,7 @@
                         },
                         dataType: 'JSON',
                         success: function(response) {
+                            swal.fire("success", response.success, "success");
                             location.reload();
                         }
                     });

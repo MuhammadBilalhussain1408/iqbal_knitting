@@ -57,7 +57,7 @@ class OrderController extends Controller
                 return count($row->OrderItems)>0 ? $row->OrderItems[0]['page_no'] : 'N/A';
             })
             ->addColumn('created_at', function($row){
-                return $row->created_at->format('Y-m-d');
+                return $row->created_at->format('d-m-Y');
             })
             ->addColumn('action', function ($row) {
                 // $editBtn = '<a href="' . route('admin.order.edit', $row->id) . '" class="btn btn-primary btn-sm">Edit</a>';
@@ -143,7 +143,10 @@ class OrderController extends Controller
             'boxes' => 'required',
         ]);
     }
-    public function destory(Request $request) {}
+    public function destroy($order) {
+        Order::where('id',$order)->delete();
+        return response()->json(['success'=>'Order deleted successfully']);
+    }
     public function viewOrder($id)
     {
         $order = Order::with(['OrderItems.Thread', 'Party'])->where('id', $id)->first();
