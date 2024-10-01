@@ -131,7 +131,8 @@ Copy code
                         // dataType: ' JSON',
                         success: function(response) {
                             swal.fire("success", response.success, "success");
-                            location.reload();
+                            table.draw();
+                            // location.reload();
                         }
                     });
                 }

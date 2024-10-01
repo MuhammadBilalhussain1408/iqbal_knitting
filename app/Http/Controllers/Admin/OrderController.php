@@ -54,9 +54,18 @@ class OrderController extends Controller
                 return $row->boxes;
             })
             ->addColumn('page_no', function ($row) {
-                return count($row->OrderItems)>0 ? $row->OrderItems[0]['page_no'] : 'N/A';
+                return count($row->OrderItems) > 0 ? $row->OrderItems[0]['page_no'] : 'N/A';
             })
-            ->addColumn('created_at', function($row){
+            ->addColumn('net_weight', function ($row) {
+                return count($row->OrderItems) > 0 ? $row->OrderItems[0]['net_weight'].' KG' : 'N/A';
+            })
+            ->addColumn('total_net_weight', function ($row) {
+                return count($row->OrderItems) > 0 ? $row->OrderItems[0]['total_net_weight'].' KG' : 'N/A';
+            })
+            ->addColumn('num_of_boxes', function ($row) {
+                return count($row->OrderItems) > 0 ? $row->OrderItems[0]['num_of_boxes'] : 'N/A';
+            })
+            ->addColumn('created_at', function ($row) {
                 return $row->created_at->format('d-m-Y');
             })
             ->addColumn('action', function ($row) {
@@ -72,57 +81,57 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         // try {
-            // Validate request data
-            $request->validate([
-                // 'order_date' => 'required|date',
-                'net_weight' => 'required|numeric',
-                'boxes' => 'required|integer',
-                'party_id' => 'required|integer',
-                'items' => 'required|array',
-                'items.*.thread_date' => 'nullable|date',
-                'items.*.page_no' => 'nullable|string',
-                'items.*.thread_id' => 'required|integer',
-                'items.*.num_of_boxes' => 'required|integer',
-                'items.*.net_weight' => 'required|numeric',
-                'items.*.total_net_weight' => 'required|numeric',
+        // Validate request data
+        $request->validate([
+            // 'order_date' => 'required|date',
+            'net_weight' => 'required|numeric',
+            'boxes' => 'required|integer',
+            'party_id' => 'required|integer',
+            'items' => 'required|array',
+            'items.*.thread_date' => 'nullable|date',
+            'items.*.page_no' => 'nullable|string',
+            'items.*.thread_id' => 'required|integer',
+            'items.*.num_of_boxes' => 'required|integer',
+            'items.*.net_weight' => 'required|numeric',
+            'items.*.total_net_weight' => 'required|numeric',
+        ]);
+
+        // Extract data excluding _token and items
+        $storeArr = $request->except(['_token', 'items']);
+
+        // Add the authenticated user's ID to the data
+        $storeArr['order_by'] = auth()->id();
+        $remaining_weight = 0;
+        foreach ($request->items as $item) {
+            // Create the order with party_id included
+            $order = Order::create($storeArr);
+
+            // Create order items
+
+            $item['order_id'] = $order->id;
+            OrderItem::create([
+                'order_id' => $order->id,
+                'thread_date' => $item['thread_date'] ?? null,
+                'page_no' => $item['page_no'] ?? null,
+                'thread_id' => $item['thread_id'],
+                'num_of_boxes' => $item['num_of_boxes'],
+                'net_weight' => $item['net_weight'],
+                'total_net_weight' => $item['total_net_weight'],
             ]);
+            $remaining_weight += $item['total_net_weight'];
+        }
 
-            // Extract data excluding _token and items
-            $storeArr = $request->except(['_token', 'items']);
-
-            // Add the authenticated user's ID to the data
-            $storeArr['order_by'] = auth()->id();
-            foreach ($request->items as $item) {
-                // Create the order with party_id included
-                $order = Order::create($storeArr);
-
-                $remaining_weight = 0;
-                // Create order items
-
-                $item['order_id'] = $order->id;
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'thread_date' => $item['thread_date'] ?? null,
-                    'page_no' => $item['page_no'] ?? null,
-                    'thread_id' => $item['thread_id'],
-                    'num_of_boxes' => $item['num_of_boxes'],
-                    'net_weight' => $item['net_weight'],
-                    'total_net_weight' => $item['total_net_weight'],
-                ]);
-                $remaining_weight += $item['total_net_weight'];
+        $party = Party::where('id', $order->party_id)->first();
+        if ($party) {
+            if ($party->remaining_weight) {
+                $remaining_weight = $remaining_weight + $party->remaining_weight;
             }
-
-            $party = Party::where('id', $order->party_id)->first();
-            if ($party) {
-                if ($party->remaining_weight) {
-                    $remaining_weight = $remaining_weight + $party->remaining_weight;
-                }
-                $party->update([
-                    'remaining_weight' => $remaining_weight
-                ]);
-            }
-            // Return a success response
-            return response()->json(['message' => 'Order created successfully']);
+            $party->update([
+                'remaining_weight' => $remaining_weight
+            ]);
+        }
+        // Return a success response
+        return response()->json(['message' => 'Order created successfully']);
         // } catch (\Exception $e) {
         //     \Log::error('Error creating order: ' . $e->getMessage());
         //     return response()->json(['message' => 'An error occurred'], 500);
@@ -143,9 +152,24 @@ class OrderController extends Controller
             'boxes' => 'required',
         ]);
     }
-    public function destroy($order) {
-        Order::where('id',$order)->delete();
-        return response()->json(['success'=>'Order deleted successfully']);
+    public function destroy($order)
+    {
+
+        $order = Order::with(['OrderItems'])->where('id', $order)->first();
+        $total_weight = 0;
+        foreach ($order->OrderItems as $item) {
+            $total_weight = $total_weight + $item->total_net_weight;
+        }
+        // dd($total_weight);
+        $party = Party::where('id', $order->party_id)->first();
+        $updatedWeight = $party->remaining_weight - $total_weight;
+        Party::where('id',$order->party_id)->update([
+            'remaining_weight' => $updatedWeight
+        ]);
+        OrderItem::where('order_id',$order->id)->delete();
+        // $order->OrderItems->delete();
+        $order->delete();
+        return response()->json(['success' => 'Order deleted successfully']);
     }
     public function viewOrder($id)
     {

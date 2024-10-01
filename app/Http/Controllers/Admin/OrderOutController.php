@@ -110,14 +110,10 @@ class OrderOutController extends Controller
         // Add the authenticated user's ID to the data
         $storeArr['order_by'] = auth()->id();
         // Create order items
+        $remaining_weight = 0;
         foreach ($request->items as $item) {
-
             // Create the order with party_id included
             $order = OrderOut::create($storeArr);
-
-            $remaining_weight = 0;
-
-
             $item['order_id'] = $order->id;
             $oldMaxTotalWeight = OrderOutItem::where('party_id', $order->party_id)->max('total_weight');
             OrderOutItem::create([
@@ -207,6 +203,7 @@ class OrderOutController extends Controller
      */
     public function destroy($order) {
         OrderOut::where('id',$order)->delete();
+        
         return response()->json(['success'=>'Order out deleted successfully']);
     }
 

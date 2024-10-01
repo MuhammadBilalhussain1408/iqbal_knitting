@@ -38,8 +38,9 @@ Copy code
                                                 <th>Order Date</th>
                                                 <th>Page No</th>
                                                 <th>Party Name</th>
-                                                <th>Total Weight</th>
+                                                <th>Net Weight</th>
                                                 <th>Total Boxes</th>
+                                                <th>Total Weight</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -80,7 +81,8 @@ Copy code
             { data: 'page_no', name: 'page_no' },
             { data: 'party_name', name: 'party_name' },
             { data: 'net_weight', name: 'net_weight' },
-            { data: 'boxes', name: 'boxes' },
+            { data: 'num_of_boxes', name: 'num_of_boxes' },
+            { data: 'total_net_weight', name: 'total_net_weight' },
             { data: 'action', name: 'action', orderable: false, searchable: false },
         ],
         'columnDefs': [
@@ -153,7 +155,8 @@ Copy code
                         // dataType: ' JSON',
                         success: function(response) {
                             swal.fire("success", response.success, "success");
-                            location.reload();
+                            // location.reload();
+                            table.draw();
                         }
                     });
                 }
