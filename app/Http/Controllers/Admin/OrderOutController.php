@@ -131,9 +131,9 @@ class OrderOutController extends Controller
 
         $party = Party::where('id', $order->party_id)->first();
         if ($party) {
-            if ($party->remaining_weight) {
-                $remaining_weight = $remaining_weight - $party->remaining_weight;
-            }
+            // if ($party->remaining_weight && $party->remaining_weight > 0) {
+                $remaining_weight = ($party->remaining_weight ? $party->remaining_weight : 0) - $remaining_weight;
+            // }
             $party->update([
                 'remaining_weight' => $remaining_weight
             ]);
@@ -201,9 +201,23 @@ class OrderOutController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($order) {
+    public function destroy($id) {
+
+        $order = OrderOut::with(['OrderItems'])->where('id', $id)->first();
+        $total_weight = 0;
+        foreach ($order->OrderItems as $item) {
+            $total_weight = $total_weight + $item->weight;
+        }
+        // dd($total_weight);
+        $party = Party::where('id', $order->party_id)->first();
+        $updatedWeight = $party->remaining_weight + $total_weight;
+        Party::where('id',$order->party_id)->update([
+            'remaining_weight' => $updatedWeight
+        ]);
+
+        OrderOutItem::where('order_out_id',$order->id)->delete();
         OrderOut::where('id',$order)->delete();
-        
+
         return response()->json(['success'=>'Order out deleted successfully']);
     }
 

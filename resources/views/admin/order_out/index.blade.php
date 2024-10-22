@@ -57,7 +57,14 @@ Copy code
 @push('scripts')
     <script type="text/javascript">
         let table = null;
-        $(document).ready(function() {
+        // $(document).ready(function() {
+
+        // });
+
+
+
+        $('#partySelect').change(function() {
+            $('#partyData').removeClass('d-none');
             table = $('#ordersTable').DataTable({
                 'language': {
                     'searchPlaceholder': "Order ID"
@@ -90,13 +97,7 @@ Copy code
                     { "targets": 1, "className": "text-start" },
                 ]
             });
-        });
-
-
-
-        $('#partySelect').change(function() {
-            $('#partyData').removeClass('d-none');
-            table.draw();
+            // table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
             $('#addOrderLink').attr('href', "{{ route('admin.order_out.create') }}" + '?party_id=' + partyId);

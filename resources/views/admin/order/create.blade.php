@@ -65,6 +65,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <b>Total weight:</b>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ $orderParty->remaining_weight }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
