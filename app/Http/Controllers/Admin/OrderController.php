@@ -131,7 +131,7 @@ class OrderController extends Controller
             ]);
         }
         // Return a success response
-        return response()->json(['message' => 'Order created successfully']);
+        return response()->json(['message' => 'Order created successfully', 'party_id'=>$order->party_id]);
         // } catch (\Exception $e) {
         //     \Log::error('Error creating order: ' . $e->getMessage());
         //     return response()->json(['message' => 'An error occurred'], 500);

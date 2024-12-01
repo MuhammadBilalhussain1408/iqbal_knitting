@@ -221,7 +221,7 @@
             },
             success: function(response) {
                 if (response.success) {
-                    window.location.href = "{{ route('admin.order_out.index') }}";
+                    window.location.href = "{{ route('admin.order_out.index') }}"+'?party_id='+response.party_id;;
                 }
             }
         });

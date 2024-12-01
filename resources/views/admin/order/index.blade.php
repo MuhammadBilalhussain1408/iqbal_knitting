@@ -13,7 +13,9 @@ Copy code
                                 <option value="">Select Party</option>
                                 {{-- Populate options dynamically --}}
                                 @foreach ($parties as $party)
-                                    <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                    <option value="{{ $party->id }}"
+                                        {{ request('party_id') == $party->id ? 'selected' : '' }}>{{ $party->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -58,47 +60,97 @@ Copy code
     <script type="text/javascript">
         let table = null;
         $(document).ready(function() {
-    table = $('#ordersTable').DataTable({
-        'language': {
-            'searchPlaceholder': "Order ID"
-        },
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "{{ route('admin.getAllOrder') }}",
-            "data": function(d) {
-                d.party_id = $('#partySelect').val();
-            },
-            "error": function(xhr, error, thrown) {
-                console.error('AJAX Error:', thrown);
-                console.log(xhr.responseText);
-            }
-        },
-        "pageLength": 5,
-        "columns": [
-            { data: 'id', name: 'id' },
-            { data: 'created_at', name: 'created_at' },
-            { data: 'page_no', name: 'page_no' },
-            { data: 'party_name', name: 'party_name' },
-            { data: 'net_weight', name: 'net_weight' },
-            { data: 'num_of_boxes', name: 'num_of_boxes' },
-            { data: 'total_net_weight', name: 'total_net_weight' },
-            { data: 'action', name: 'action', orderable: false, searchable: false },
-        ],
-        'columnDefs': [
-            { "targets": 0, "className": "text-start", "width": "4%" },
-            { "targets": 1, "className": "text-start" },
-        ]
-    });
-});
+            let party_id = "{{ request('party_id') }}";
+            console.log(party_id);
 
+            if (party_id) {
+                drawTable(party_id);
+            }
+        });
+
+        function drawTable(pID = '') {
+            $('#partyData').removeClass('d-none');
+            console.log($('#partySelect').val());
+
+            if (pID != $('#partySelect').val()) {
+                pID = $('#partySelect').val();
+            }
+            table = $('#ordersTable').DataTable({
+                'language': {
+                    'searchPlaceholder': "Order ID"
+                },
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ route('admin.getAllOrder') }}",
+                    "data": function(d) {
+                        d.party_id = pID != $('#partySelect').val() ? $('#partySelect').val() : pID;
+                    },
+                    "error": function(xhr, error, thrown) {
+                        console.error('AJAX Error:', thrown);
+                        console.log(xhr.responseText);
+                    }
+                },
+                "pageLength": 5,
+                "columns": [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'page_no',
+                        name: 'page_no'
+                    },
+                    {
+                        data: 'party_name',
+                        name: 'party_name'
+                    },
+                    {
+                        data: 'net_weight',
+                        name: 'net_weight'
+                    },
+                    {
+                        data: 'num_of_boxes',
+                        name: 'num_of_boxes'
+                    },
+                    {
+                        data: 'total_net_weight',
+                        name: 'total_net_weight'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                'columnDefs': [{
+                        "targets": 0,
+                        "className": "text-start",
+                        "width": "4%"
+                    },
+                    {
+                        "targets": 1,
+                        "className": "text-start"
+                    },
+                ]
+            });
+        }
 
 
         $('#partySelect').change(function() {
             $('#partyData').removeClass('d-none');
-            table.draw();
+            // table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
+            if (table) {
+                table.draw();
+            } else {
+                drawTable(partyId)
+            }
             $('#addOrderLink').attr('href', "{{ route('admin.order.create') }}" + '?party_id=' + partyId);
             // if (partyId) {
             //     fetchPartyData(partyId); // Fetch party data

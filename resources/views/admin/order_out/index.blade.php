@@ -13,7 +13,9 @@ Copy code
                                 <option value="">Select Party</option>
                                 {{-- Populate options dynamically --}}
                                 @foreach ($parties as $party)
-                                    <option value="{{ $party->id }}">{{ $party->name }}</option>
+                                    <option value="{{ $party->id }}"
+                                        {{ request('party_id') == $party->id ? 'selected' : '' }}>{{ $party->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -57,14 +59,22 @@ Copy code
 @push('scripts')
     <script type="text/javascript">
         let table = null;
-        // $(document).ready(function() {
+        $(document).ready(function() {
+            let party_id = "{{ request('party_id') }}";
+            console.log(party_id);
 
-        // });
+            if (party_id) {
+                drawTable(party_id);
+            }
+        });
 
-
-
-        $('#partySelect').change(function() {
+        function drawTable(pID='') {
             $('#partyData').removeClass('d-none');
+            console.log($('#partySelect').val());
+
+            if(pID != $('#partySelect').val()){
+                pID = $('#partySelect').val();
+            }
             table = $('#ordersTable').DataTable({
                 'language': {
                     'searchPlaceholder': "Order ID"
@@ -74,7 +84,7 @@ Copy code
                 "ajax": {
                     "url": "{{ route('admin.getAllOrderOut') }}",
                     "data": function(d) {
-                        d.party_id = $('#partySelect').val();
+                        d.party_id = pID != $('#partySelect').val() ? $('#partySelect').val() : pID ;
                     },
                     "error": function(xhr, error, thrown) {
                         console.error('AJAX Error:', thrown);
@@ -82,24 +92,66 @@ Copy code
                     }
                 },
                 "pageLength": 5,
-                "columns": [
-                    { data: 'id', name: 'id' },
-                    { data: 'order_date', name: 'order_date' },
-                    { data: 'party_name', name: 'party_name' },
-                    { data: 'num_of_rolls', name: 'num_of_rolls' },
-                    { data: 'weight', name: 'weight' },
-                    { data: 'total_weight', name: 'total_weight' },
-                    { data: 'remaining_weight', name: 'remaining_weight' },
-                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                "columns": [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'order_date',
+                        name: 'order_date'
+                    },
+                    {
+                        data: 'party_name',
+                        name: 'party_name'
+                    },
+                    {
+                        data: 'num_of_rolls',
+                        name: 'num_of_rolls'
+                    },
+                    {
+                        data: 'weight',
+                        name: 'weight'
+                    },
+                    {
+                        data: 'total_weight',
+                        name: 'total_weight'
+                    },
+                    {
+                        data: 'party_remaing_weight',
+                        name: 'party_remaing_weight'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    },
                 ],
-                'columnDefs': [
-                    { "targets": 0, "className": "text-start", "width": "4%" },
-                    { "targets": 1, "className": "text-start" },
+                'columnDefs': [{
+                        "targets": 0,
+                        "className": "text-start",
+                        "width": "4%"
+                    },
+                    {
+                        "targets": 1,
+                        "className": "text-start"
+                    },
                 ]
             });
+        }
+
+
+        $('#partySelect').change(function() {
+            $('#partyData').removeClass('d-none');
+
             // table.draw();
             // alert('retre');
             var partyId = $(this).val(); // Get selected party ID
+            if(table){
+                table.draw();
+            } else {
+                drawTable(partyId)
+            }
             $('#addOrderLink').attr('href', "{{ route('admin.order_out.create') }}" + '?party_id=' + partyId);
         });
 

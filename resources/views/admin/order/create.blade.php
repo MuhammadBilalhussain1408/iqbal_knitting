@@ -108,7 +108,7 @@
                                         <select id="thread0" class="form-control">
                                             <option value="">Select Thread</option>
                                             @foreach ($threads as $thread)
-                                                <option value="{{ $thread->id }}">{{ $thread->name }}</option>
+                                                <option value="{{ $thread->id }}">{{ $thread->name }} - {{$thread->type}}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -187,7 +187,7 @@
                     <select id="thread${dataCount}" class="form-control" >
                         <option value="">Select Thread</option>
                         @foreach ($threads as $thread)
-                            <option value="{{ $thread->id }}">{{ $thread->name }}</option>
+                            <option value="{{ $thread->id }}">{{ $thread->name }} - {{ $thread->type }}</option>
                         @endforeach
                     </select>
                 </td>
@@ -246,7 +246,7 @@
         },
         success: function(result) {
             Toast.fire('success', result.message, 'success');
-            window.location.href = "{{ route('admin.order.index') }}";
+            window.location.href = "{{ route('admin.order.index') }}"+'?party_id='+result.party_id;
         }
     });
 });

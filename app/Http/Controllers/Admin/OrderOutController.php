@@ -60,9 +60,9 @@ class OrderOutController extends Controller
             ->addColumn('party_name', function ($row) {
                 return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->name : 'N/A';
             })
-            ->addColumn('remaining_weight', function ($row) {
-                return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->remaining_weight : 'N/A';
-            })
+                ->addColumn('party_remaing_weight', function ($row) {
+                    return $row->orderOut ? $row->orderOut->party_remaing_weight : 'N/A';
+                })
             ->addColumn('party_name', function ($row) {
                 return $row->orderOut && $row->orderOut->party ? $row->orderOut->party->name : 'N/A';
             })
@@ -138,9 +138,11 @@ class OrderOutController extends Controller
                 'remaining_weight' => $remaining_weight
             ]);
         }
-
+        OrderOut::where('id',$order->id)->update([
+            'party_remaing_weight'=> $remaining_weight
+        ]);
         // Return a success response
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'party_id'=>$order->party_id]);
 
         //  } catch (\Exception $e) {
         //      \Log::error('Error creating order Out: ' . $e->getMessage());
